@@ -21,6 +21,6 @@ def get_auth_url():
     return sp_oauth.get_authorize_url()
 
 def get_spotify_client(code):
-    access_token = sp_oauth.get_access_token(code)
-    sp = spotipy.Spotify(auth=access_token)
+    token_info = sp_oauth.get_access_token(code)
+    sp = spotipy.Spotify(auth=token_info['access_token'])
     return sp
