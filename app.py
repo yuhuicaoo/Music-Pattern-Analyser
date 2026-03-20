@@ -11,48 +11,18 @@ supabase = create_client(supabase_url=SUPABASE_URL,supabase_key=SUPABASE_KEY)
 backend_url = "https://music-pattern-analyser.onrender.com"
 
 def show_login():
-    st.markdown(f"""
-        <style>
-            .login-container {{
-                background-color: #111;
-                border-radius: 15px;
-                border: 1px solid #333;
-                padding: 40px;
-                text-align: center;
-                margin: 50px auto;
-                max-width: 500px;
-            }}
-            .login-title {{
-                color: white;
-                font-size: 24px;
-                font-weight: bold;
-                margin-bottom: 10px;
-            }}
-            .login-subtitle {{
-                color: #aaa;
-                font-size: 15px;
-                margin-bottom: 30px;
-            }}
-            .login-button {{
-                background-color: #1DB954;
-                color: white;
-                padding: 12px 30px;
-                border-radius: 25px;
-                text-decoration: none;
-                font-weight: bold;
-                font-size: 16px;
-            }}
-            .login-button:hover {{
-                background-color: #1ed760;
-                color: white;
-            }}
-        </style>
-        <div class="login-container">
-            <div class="login-title">🎵 Spotify Top Tracks Collector</div>
-            <div class="login-subtitle">Log in with your Spotify account to see your top 50 tracks</div>
-            <a href="{backend_url}/login" target="_self" class="login-button">Login with Spotify</a>
-        </div>
-    """, unsafe_allow_html=True)
+    st.markdown(f'''
+        <a href="{backend_url}/login" target="_self" style="
+            display: inline-block;
+            background-color: #1DB954;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+        ">Login with Spotify</a>
+    ''', unsafe_allow_html=True)
 
 def show_consent():
     st.warning("Do you agree to giving access to your Spotify listening data and storing it in our database?")
@@ -138,7 +108,7 @@ def show_tracks(username):
 
     tracks_html = '<div class="scroll-container">'
     for idx, row in enumerate(data.data):
-        image_url = st.session_state.track_images.get(row["track_id"], "")
+        image_url = st.session_state.track_img.get(row["track_id"], "")
         tracks_html += f"""
             <div class="track-card">
                 <span class="track-number">{idx + 1}</span>
