@@ -104,22 +104,19 @@ def show_tracks(username):
         </style>
     """, unsafe_allow_html=True)
 
-    st.subheader("Your Top 50 Tracks")
+    st.subheader("Your Top 50 Tracks This Month")
 
     tracks_html = '<div class="scroll-container">'
     for idx, row in enumerate(data.data):
-        image_url = st.session_state.track_imgs.get(row["track_id"], "")
-        tracks_html += f"""
-            <div class="track-card">
-                <span class="track-number">{idx + 1}</span>
-                <img class="track-image" src="{image_url}" />
-                <div>
-                    <div class="track-name">{row['track_name']}</div>
-                    <div class="track-artist">{row['artist']}</div>
-                </div>
+        st.markdown(f"""
+        <div class="track-card">
+            <span class="track-number">{idx + 1}</span>
+            <div>
+                <div class="track-name">{row['track_name']}</div>
+                <div class="track-artist">{row['artist']}</div>
             </div>
-        """
-    tracks_html += '</div>'
+        </div>
+        """, unsafe_allow_html=True)
 
     st.markdown(tracks_html, unsafe_allow_html=True)
 
