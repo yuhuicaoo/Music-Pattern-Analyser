@@ -33,5 +33,5 @@ async def callback(request: Request):
     access_token = token_info["access_token"]
 
     return RedirectResponse(
-        url=f"https://music-pattern-analyser.streamlit.app/?code={access_token}"
+        url=f"https://music-pattern-analyser.streamlit.app/?token={access_token}"
     )

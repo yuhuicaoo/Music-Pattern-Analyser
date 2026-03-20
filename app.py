@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import spotipy
-from fastapi.responses import RedirectResponse
 
 # Streamlit UI
 st.title("Spotify Top Tracks Collector")
