@@ -115,7 +115,7 @@ def show_tracks(username):
         track_name = escape(row["track_name"])
         artist = escape(row["artist"])
 
-        tracks_html += f"""
+        tracks_html += f'''
             <div class="track-card">
                 <span class="track-number">{idx + 1}</span>
                 <img class="track-image" src="{image_url}" />
@@ -124,9 +124,7 @@ def show_tracks(username):
                     <div class="track-artist">{artist}</div>
                 </div>
             </div>
-        """
-
-    tracks_html += '</div>'
+        '''
 
     st.markdown(tracks_html, unsafe_allow_html=True)
 
