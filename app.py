@@ -3,7 +3,7 @@ import pandas as pd
 import streamlit as st
 from supabase import create_client
 from html import escape
-from utils import img_to_base64
+import streamlit.components.v1 as components
 
 SUPABASE_URL= st.secrets["supabase"]["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["supabase"]["SUPABASE_KEY"]
@@ -60,58 +60,32 @@ def show_tracks(username):
     with st.spinner("Loading your top 50 songs..."):
         data = supabase.table("user_tracks").select("*").eq("username", username).execute()
 
-    st.markdown("""
-        <style>
-            .track-card {
-                display: flex;
-                align-items: center;
-                padding: 10px;
-                margin-bottom: 8px;
-                background-color: #1a1a1a;
-                border-radius: 10px;
-                transition: background-color 0.2s;
-            }
-            .track-card:hover {
-                background-color: #2a2a2a;
-            }
-            .track-number {
-                font-size: 14px;
-                color: #888;
-                width: 30px;
-                text-align: center;
-            }
-            .track-image {
-                width: 50px;
-                height: 50px;
-                border-radius: 5px;
-                margin: 0 15px;
-            }
-            .track-name {
-                font-size: 15px;
-                font-weight: bold;
-                color: white;
-            }
-            .track-artist {
-                font-size: 13px;
-                color: #aaa;
-            }
-            .scroll-container {
-                height: 500px;
-                overflow-y: auto;
-                padding: 10px;
-                background-color: #111;
-                border-radius: 15px;
-                border: 1px solid #333;
-            }
-        </style>
-    """, unsafe_allow_html=True)
-
     st.subheader("Your Top 50 Tracks This Month")
+    
+    tracks_html = """
+    <style>
+        body { margin: 0; background-color: #111; }
+        .track-card {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 8px;
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            transition: background-color 0.2s;
+        }
+        .track-card:hover { background-color: #2a2a2a; }
+        .track-number { font-size: 14px; color: #888; width: 30px; text-align: center; }
+        .track-image { width: 50px; height: 50px; border-radius: 5px; margin: 0 15px; }
+        .track-name { font-size: 15px; font-weight: bold; color: white; }
+        .track-artist { font-size: 13px; color: #aaa; }
+    </style>
+    <div>
+    """
 
-    tracks_html = '<div class="scroll-container">'
+
     for idx, row in enumerate(data.data):
-        raw_img_url = st.session_state.track_imgs.get(row["track_id"], "")
-        image_url = img_to_base64(raw_img_url)
+        image_url = st.session_state.track_imgs.get(row["track_id"], "")
         track_name = escape(row["track_name"])
         artist = escape(row["artist"])
 
@@ -126,7 +100,9 @@ def show_tracks(username):
             </div>
         '''
 
-    st.markdown(tracks_html, unsafe_allow_html=True)
+    tracks_html += '</div>'
+
+    components.html(tracks_html, height=520, scrolling=True)
 
 def main():
     st.title("Spotify Top Tracks Collector")
