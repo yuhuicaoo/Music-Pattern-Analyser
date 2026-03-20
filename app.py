@@ -31,7 +31,7 @@ if "token" in query_params:
     st.success(f"Hello {username}!")
 
     # Fetch data from Spotify API and store in database
-    results = sp.current_user_top_tracks(limit=50)
+    results = sp.current_user_top_tracks(limit=50, time_range="short_term")
     for idx, track in enumerate(results["items"]):
         supabase.table("user_tracks").insert({
             "username": username,
