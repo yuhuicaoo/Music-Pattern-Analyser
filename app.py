@@ -29,6 +29,13 @@ def show_consent():
 def fetch_data_and_store(sp, username):
     with st.spinner("Fetching your top tracks from Spotify..."):
         results = sp.current_user_top_tracks(limit=50, time_range="short_term")
+
+        # keep album images to display.
+        if "track_imgs" not in st.session_state:
+            st.session_state.track_imgs = {
+                track["id"]: track["album"]["images"][0]['url'] for track in results["items"]
+            }
+
         for track in results["items"]:
             supabase.table("user_tracks").insert({
                 "username": username,
@@ -40,8 +47,18 @@ def fetch_data_and_store(sp, username):
 def show_tracks(username):
     with st.spinner("Loading your top 50 songs..."):
         data = supabase.table("user_tracks").select("*").eq("username", username).execute()
-        df = pd.DataFrame(data.data).drop('id', axis=1)
-    st.dataframe(df)
+
+    st.subheader("Your Top 50 Songs this month")
+    for idx, row in enumerate(data.data):
+        col1, col2 = st.columns([1,4])
+        with col1:
+            image_url = st.session_state.track_imgs.get(row["track_id"])
+            if image_url:
+                st.image(image_url, width=60)
+        with col2:
+            st.markdown(f"**{idx + 1}. {row['track_name']}**")
+            st.caption(row["artist"])
+        st.divider()
 
 def main():
     st.title("Spotify Top Tracks Collector")
@@ -51,7 +68,9 @@ def main():
         return
 
     st.session_state.setdefault("consent_given", False)
+    st.session_state.setdefault("data_fetched", False)
 
+    # consent to collect data
     if not st.session_state.consent_given:
         show_consent()
         return
@@ -61,7 +80,11 @@ def main():
     username = user["display_name"]
     st.success(f"Hello {username}!")
 
-    fetch_data_and_store(sp, username)
+    # only fetch data if it hasnt already been fetched
+    if not st.session_state.data_fetched:
+        fetch_data_and_store(sp, username)
+        st.session_state.data_fetched = True
+        
     show_tracks(username)
 
 
