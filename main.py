@@ -1,55 +1,36 @@
-import pandas as pd
-import streamlit as st
-import spotipy
-from spotipy.oauth2 import SpotifyOAuth
 import os
-from dotenv import load_dotenv
+from fastapi import FastAPI, Request
+from spotipy.oauth2 import SpotifyOAuth
+from fastapi.responses import RedirectResponse, JSONResponse
 
-# Load environment variables from .env
-load_dotenv()
+app = FastAPI()
 
+# Spotify keys
 CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
 CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
 REDIRECT_URI  = os.getenv("SPOTIFY_REDIRECT_URI")
 SCOPE = "user-top-read"
 
-st.title("Spotify Top Tracks Collector")
-
-# authentication
-st.write("Click below to log in with Spotify")
-auth_url = SpotifyOAuth(
+sp_oauth = SpotifyOAuth(
     client_id=CLIENT_ID,
     client_secret=CLIENT_SECRET,
     redirect_uri=REDIRECT_URI,
     scope=SCOPE,
-    cache_path=".cache"
-).get_authorize_url()
+    cache_path=None
+)
 
-st.markdown(f"[Login to Spotify]({auth_url})")
+@app.get("/login")
+def login():
+    auth_url = sp_oauth.get_authorize_url()
+    return RedirectResponse(auth_url)
 
-redirect_response = st.text_input("Paste the full redirect URL here:")
-print(redirect_response)
+@app.get("/callback")
+async def callback(request: Request):
+    code = request.query_params.get("code")
 
-# sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
-#     client_id=CLIENT_ID,
-#     client_secret=CLIENT_SECRET,
-#     redirect_uri=REDIRECT_URI,
-#     scope=SCOPE
-# ))
+    token_info = sp_oauth.get_access_token(code)
+    access_token = token_info["access_token"]
 
-# results = sp.current_user_top_tracks(limit=50)
-
-# # store track data.
-# tracks, track_ids = [], []
-# for item in results['items']:
-#     track_ids.append(item['id'])
-#     tracks.append({
-#         "track_id": item['id'],
-#         "artist": item['artists'][0]['name'],
-#         "track_name": item['name'],
-#     })
-
-# # Write and save data to a csv
-# df = pd.DataFrame(tracks)
-# username = sp.me()['display_name']
-# df.to_csv(f"{username}_top50_tracks.csv", index=False)
+    return RedirectResponse(
+        url=f"https://music-pattern-analyser.streamlit.app/?code={access_token}"
+    )

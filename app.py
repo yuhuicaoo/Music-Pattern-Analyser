@@ -1,41 +1,27 @@
 import streamlit as st
 import pandas as pd
 import spotipy
-from spotipy.oauth2 import SpotifyOAuth
-import os
-from dotenv import load_dotenv
-
-CLIENT_ID = st.secrets["spotify"]["SPOTIFY_CLIENT_ID"]
-CLIENT_SECRET = st.secrets["spotify"]["SPOTIFY_CLIENT_SECRET"]
-REDIRECT_URI = st.secrets["spotify"]["SPOTIFY_REDIRECT_URI"]
-SCOPE = "user-top-read"
+from fastapi.responses import RedirectResponse
 
 # Streamlit UI
 st.title("Spotify Top Tracks Collector")
 
-# Step 1: Generate Spotify login URL
-sp_oauth = SpotifyOAuth(
-    client_id=CLIENT_ID,
-    client_secret=CLIENT_SECRET,
-    redirect_uri=REDIRECT_URI,
-    scope=SCOPE,
-    cache_path=".cache"
-)
+backend_url = "https://music-pattern-analyser.onrender.com"
 
-# Check if we have a cached token
-token_info = sp_oauth.get_cached_token()
+st.markdown(f"[Login with Spotify]({backend_url})/login")
 
-if not token_info:
-    # No cached token, show login button
-    auth_url = sp_oauth.get_authorize_url()
-    st.markdown(f"[Login with Spotify]({auth_url})")
-else:
-    # Token exists, fetch top tracks automatically
-    sp = spotipy.Spotify(auth=token_info['access_token'])
+query_params = st.query_params
+
+if "token" in query_params:
+    access_token = query_params["token"]
+
+    sp = spotipy.Spotify(auth = access_token)
+
     user = sp.me()
     username = user["display_name"]
     st.success(f"Hello {username}!")
 
+    # Fetch data
     results = sp.current_user_top_tracks(limit=50)
     tracks = [{
         "track_id": track['id'],
@@ -54,3 +40,5 @@ else:
         file_name=csv_file,
         mime="text/csv"
     )
+else:
+    st.info("Please log in with Spotify")
