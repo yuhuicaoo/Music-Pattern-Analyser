@@ -1,26 +1,32 @@
-import os
 import spotipy
-from spotipy.oauth2 import SpotifyOAuth
-from dotenv import load_dotenv
+import streamlit as st
+from config import BACKEND_URL
 
-load_dotenv()
+def get_spotify_client():
+    return spotipy.Spotify(auth=st.query_params["token"])
 
-CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
-CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
-REDIRECT_URI  = os.getenv("SPOTIFY_REDIRECT_URI")
-SCOPE = "user-top-read"
+def show_login():
+    st.markdown(f'''
+        <a href="{BACKEND_URL}/login" target="_self" style="
+            display: inline-block;
+            background-color: #1DB954;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+        ">Login with Spotify</a>
+    ''', unsafe_allow_html=True)
 
-sp_oauth = SpotifyOAuth(
-    client_id=CLIENT_ID,
-    client_secret=CLIENT_SECRET,
-    redirect_uri=REDIRECT_URI,
-    scope=SCOPE,
-)
-
-def get_auth_url():
-    return sp_oauth.get_authorize_url()
-
-def get_spotify_client(code):
-    token_info = sp_oauth.get_access_token(code)
-    sp = spotipy.Spotify(auth=token_info['access_token'])
-    return sp
+def show_consent():
+    st.warning("Do you agree to giving access to your Spotify listening data and storing it in our database?")
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("Yes, I consent", use_container_width=True):
+            st.session_state.consent_given = True
+            st.rerun()
+    with col2:
+        if st.button("No, I do not give consent", use_container_width=True):
+            st.info("Your data will not be accessed or stored")
+            st.stop()

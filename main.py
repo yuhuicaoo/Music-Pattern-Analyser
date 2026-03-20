@@ -22,7 +22,6 @@ sp_oauth = SpotifyOAuth(
 @app.get("/login")
 def login():
     auth_url = sp_oauth.get_authorize_url()
-    print(auth_url)
     return RedirectResponse(auth_url)
 
 @app.get("/callback")
