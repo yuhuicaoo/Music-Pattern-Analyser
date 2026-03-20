@@ -54,7 +54,7 @@ def show_tracks(username):
         with col1:
             image_url = st.session_state.track_imgs.get(row["track_id"])
             if image_url:
-                st.image(image_url, width=60)
+                st.image(image_url, width=100)
         with col2:
             st.markdown(f"**{idx + 1}. {row['track_name']}**")
             st.caption(row["artist"])
@@ -84,7 +84,7 @@ def main():
     if not st.session_state.data_fetched:
         fetch_data_and_store(sp, username)
         st.session_state.data_fetched = True
-        
+
     show_tracks(username)
 
 
