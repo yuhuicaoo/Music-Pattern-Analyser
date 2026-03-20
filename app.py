@@ -11,7 +11,18 @@ supabase = create_client(supabase_url=SUPABASE_URL,supabase_key=SUPABASE_KEY)
 backend_url = "https://music-pattern-analyser.onrender.com"
 
 def show_login():
-    st.link_button("Login with Spotify", f"{backend_url}/login", width="stretch")
+    st.markdown(f'''
+        <a href="{backend_url}/login" target="_self" style="
+            display: inline-block;
+            background-color: #1DB954;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+        ">Login with Spotify</a>
+    ''', unsafe_allow_html=True)
 
 def show_consent():
     st.warning("Do you agree to giving access to your Spotify listening data and storing it in our database?")
