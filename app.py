@@ -56,8 +56,8 @@ def show_tracks(username):
             if image_url:
                 st.image(image_url, width=100)
         with col2:
-            st.markdown(f"**{idx + 1}. {row['track_name']}**")
-            st.caption(row["artist"])
+            st.markdown(f"***{idx + 1}. {row['track_name']}***")
+            st.caption(f"*{row["artist"]}*")
         st.divider()
 
 def main():
