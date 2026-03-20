@@ -4,6 +4,7 @@ import streamlit as st
 from supabase import create_client
 from html import escape
 import streamlit.components.v1 as components
+from utils import img_to_base64
 
 SUPABASE_URL= st.secrets["supabase"]["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["supabase"]["SUPABASE_KEY"]
@@ -63,33 +64,34 @@ def show_tracks(username):
     st.subheader("Your Top 50 Tracks This Month")
 
     tracks_html = """
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        body { margin: 0; padding: 12px; background-color: #111; font-family: 'Inter', sans-serif; }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #111; }
-        ::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #666; }
-        .track-card {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            margin-bottom: 8px;
-            background-color: #1a1a1a;
-            border-radius: 10px;
-            transition: background-color 0.2s;
-        .track-card:hover { background-color: #2a2a2a; }
-        .track-number { font-size: 14px; color: #888; width: 30px; text-align: center; }
-        .track-image { width: 50px; height: 50px; border-radius: 5px; margin: 0 15px; }
-        .track-name { font-size: 15px; font-weight: bold; color: white; }
-        .track-artist { font-size: 13px; color: #aaa; }
-    </style>
-    <div>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+        <style>
+            body { margin: 0; padding: 12px; background-color: #111; font-family: 'Inter', sans-serif; }
+            ::-webkit-scrollbar { width: 6px; }
+            ::-webkit-scrollbar-track { background: #111; }
+            ::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
+            ::-webkit-scrollbar-thumb:hover { background: #666; }
+            .track-card {
+                display: flex;
+                align-items: center;
+                padding: 10px;
+                margin-bottom: 8px;
+                background-color: #1a1a1a;
+                border-radius: 10px;
+                transition: background-color 0.2s;
+            .track-card:hover { background-color: #2a2a2a; }
+            .track-number { font-size: 14px; color: #888; width: 30px; text-align: center; }
+            .track-image { width: 50px; height: 50px; border-radius: 5px; margin: 0 15px; }
+            .track-name { font-size: 15px; font-weight: bold; color: white; }
+            .track-artist { font-size: 13px; color: #aaa; }
+        </style>
+        <div>
     """
 
 
     for idx, row in enumerate(data.data):
-        image_url = st.session_state.track_imgs.get(row["track_id"], "")
+        raw_img = st.session_state.track_imgs.get(row["track_id"], "")
+        image_url = img_to_base64(raw_img)
         track_name = escape(row["track_name"])
         artist = escape(row["artist"])
 
