@@ -1,6 +1,15 @@
-import streamlit as st
-import pandas as pd
 import spotipy
+import pandas as pd
+import streamlit as st
+from supabase import create_client
+
+SUPABASE_URL= st.secrets["supabase"]["SUPABASE_URL"]
+SUPABASE_KEY = st.secrets["supabase"]["SUPABASE_KEY"]
+
+supabase = create_client(
+    supabase_url=SUPABASE_URL,
+    supabase_key=SUPABASE_KEY
+)
 
 # Streamlit UI
 st.title("Spotify Top Tracks Collector")
@@ -22,22 +31,18 @@ if "token" in query_params:
 
     # Fetch data
     results = sp.current_user_top_tracks(limit=50)
-    tracks = [{
-        "track_id": track['id'],
-        "artist": track['artists'][0]['name'],
-        "track_name": track['name']
-    } for track in results['items']]
+    for idx, track in enumerate(results["items"]):
+        supabase.table("user_tracks").insert({
+            "username": username,
+            "track_id": track['id'],
+            "track_name": track['name'],
+            "artist": track['artists'][0]['name'],
+        }).execute()
+    
+    st.success(f"Saved {len(idx)} tracks to Supabase!")
 
-    df = pd.DataFrame(tracks)
+    data = supabase.table("user_tracks").select("*").eq("username", username).execute()
+    df = pd.DataFrame(data.data)
     st.dataframe(df)
-
-    # CSV download
-    csv_file = f"{username}_top50_tracks.csv"
-    st.download_button(
-        label="Download CSV",
-        data=df.to_csv(index=False),
-        file_name=csv_file,
-        mime="text/csv"
-    )
 else:
     st.info("Please log in with Spotify")
