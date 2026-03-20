@@ -66,6 +66,10 @@ def show_tracks(username):
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
         body { margin: 0; background-color: #111; font-family: 'Inter', sans-serif; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #111; }
+        ::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #666; }
         .track-card {
             display: flex;
             align-items: center;
@@ -74,7 +78,6 @@ def show_tracks(username):
             background-color: #1a1a1a;
             border-radius: 10px;
             transition: background-color 0.2s;
-        }
         .track-card:hover { background-color: #2a2a2a; }
         .track-number { font-size: 14px; color: #888; width: 30px; text-align: center; }
         .track-image { width: 50px; height: 50px; border-radius: 5px; margin: 0 15px; }
