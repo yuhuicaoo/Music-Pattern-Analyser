@@ -45,6 +45,7 @@ if "token" in query_params:
     # Fetch data from database
     data = supabase.table("user_tracks").select("*").eq("username", username).execute()
     df = pd.DataFrame(data.data)
+    df = df.drop('id', axis=1)
     st.dataframe(df)
 else:
     st.info("Please log in with Spotify")
