@@ -65,7 +65,7 @@ def show_tracks(username):
     tracks_html = """
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        body { margin: 0; background-color: #111; font-family: 'Inter', sans-serif; }
+        body { margin: 0; padding: 12px; background-color: #111; font-family: 'Inter', sans-serif; }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #111; }
         ::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
