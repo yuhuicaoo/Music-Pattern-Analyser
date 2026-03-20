@@ -61,10 +61,11 @@ def show_tracks(username):
         data = supabase.table("user_tracks").select("*").eq("username", username).execute()
 
     st.subheader("Your Top 50 Tracks This Month")
-    
+
     tracks_html = """
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        body { margin: 0; background-color: #111; }
+        body { margin: 0; background-color: #111; font-family: 'Inter', sans-serif; }
         .track-card {
             display: flex;
             align-items: center;
