@@ -22,43 +22,35 @@ sp_oauth = SpotifyOAuth(
     cache_path=".cache"
 )
 
-auth_url = sp_oauth.get_authorize_url()
-st.markdown(f"[Login with Spotify]({auth_url})")
+# Check if we have a cached token
+token_info = sp_oauth.get_cached_token()
 
-# Step 2: User pastes redirect URL here
-redirect_response = st.text_input("After login, paste the full URL Spotify redirected you to:")
+if not token_info:
+    # No cached token, show login button
+    auth_url = sp_oauth.get_authorize_url()
+    st.markdown(f"[Login with Spotify]({auth_url})")
+else:
+    # Token exists, fetch top tracks automatically
+    sp = spotipy.Spotify(auth=token_info['access_token'])
+    user = sp.me()
+    username = user["display_name"]
+    st.success(f"Hello {username}!")
 
-if redirect_response:
-    token_info = sp_oauth.get_access_token(redirect_response)
-    if token_info:
-        sp = spotipy.Spotify(auth=token_info['access_token'])
-        user = sp.me()
-        username = user["display_name"]
-        st.success(f"Hello {username}!")
+    results = sp.current_user_top_tracks(limit=50)
+    tracks = [{
+        "track_id": t['id'],
+        "artist": t['artists'][0]['name'],
+        "track_name": t['name']
+    } for t in results['items']]
 
-        # Step 3: Fetch top tracks
-        results = sp.current_user_top_tracks(limit=50)
-        tracks = []
-        for item in results['items']:
-            tracks.append({
-                "track_id": item['id'],
-                "artist": item['artists'][0]['name'],
-                "track_name": item['name'],
-            })
+    df = pd.DataFrame(tracks)
+    st.dataframe(df)
 
-        df = pd.DataFrame(tracks)
-        st.dataframe(df)
-
-        # Save CSV
-        csv_file = f"{username}_top50_tracks.csv"
-        df.to_csv(csv_file, index=False)
-        st.success(f"Saved CSV: {csv_file}")
-
-        # Download button
-        csv = df.to_csv(index=False)
-        st.download_button(
-            label="Download CSV",
-            data=csv,
-            file_name=csv_file,
-            mime="text/csv"
-        )
+    # CSV download
+    csv_file = f"{username}_top50_tracks.csv"
+    st.download_button(
+        label="Download CSV",
+        data=df.to_csv(index=False),
+        file_name=csv_file,
+        mime="text/csv"
+    )
