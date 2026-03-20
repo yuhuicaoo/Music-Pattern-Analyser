@@ -5,11 +5,9 @@ from spotipy.oauth2 import SpotifyOAuth
 import os
 from dotenv import load_dotenv
 
-# Load API keys
-load_dotenv()
-CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
-CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
-REDIRECT_URI = os.getenv("SPOTIFY_REDIRECT_URI")
+CLIENT_ID = st.secrets["spotify"]["SPOTIFY_CLIENT_ID"]
+CLIENT_SECRET = st.secrets["spotify"]["SPOTIFY_CLIENT_SECRET"]
+REDIRECT_URI = st.secrets["spotify"]["SPOTIFY_REDIRECT_URI"]
 SCOPE = "user-top-read"
 
 # Streamlit UI
