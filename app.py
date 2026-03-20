@@ -8,7 +8,7 @@ st.title("Spotify Top Tracks Collector")
 
 backend_url = "https://music-pattern-analyser.onrender.com"
 
-st.markdown(f"[Login with Spotify]({backend_url})/login")
+st.markdown(f"[Login with Spotify]({backend_url}/login)")
 
 query_params = st.query_params
 
