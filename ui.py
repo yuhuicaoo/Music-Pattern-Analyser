@@ -2,7 +2,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 from html import escape
 from utils import img_to_base64
-from data import load_user_tracks
+from spotify_data import load_user_tracks
 
 TRACKS_CSS = """
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
