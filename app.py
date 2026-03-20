@@ -38,10 +38,10 @@ else:
 
     results = sp.current_user_top_tracks(limit=50)
     tracks = [{
-        "track_id": t['id'],
-        "artist": t['artists'][0]['name'],
-        "track_name": t['name']
-    } for t in results['items']]
+        "track_id": track['id'],
+        "artist": track['artists'][0]['name'],
+        "track_name": track['name']
+    } for track in results['items']]
 
     df = pd.DataFrame(tracks)
     st.dataframe(df)
