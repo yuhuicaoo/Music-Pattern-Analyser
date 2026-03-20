@@ -3,6 +3,7 @@ import pandas as pd
 import streamlit as st
 from supabase import create_client
 from html import escape
+from utils import img_to_base64
 
 SUPABASE_URL= st.secrets["supabase"]["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["supabase"]["SUPABASE_KEY"]
@@ -109,7 +110,8 @@ def show_tracks(username):
 
     tracks_html = '<div class="scroll-container">'
     for idx, row in enumerate(data.data):
-        image_url = st.session_state.track_imgs.get(row["track_id"], "")
+        raw_img_url = st.session_state.track_imgs.get(row["track_id"], "")
+        image_url = img_to_base64(raw_img_url)
         track_name = escape(row["track_name"])
         artist = escape(row["artist"])
 
