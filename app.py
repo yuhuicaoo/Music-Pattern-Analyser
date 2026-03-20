@@ -25,11 +25,12 @@ if "token" in query_params:
 
     sp = spotipy.Spotify(auth = access_token)
 
+    # Get username
     user = sp.me()
     username = user["display_name"]
     st.success(f"Hello {username}!")
 
-    # Fetch data
+    # Fetch data from Spotify API and store in database
     results = sp.current_user_top_tracks(limit=50)
     for idx, track in enumerate(results["items"]):
         supabase.table("user_tracks").insert({
@@ -39,8 +40,9 @@ if "token" in query_params:
             "artist": track['artists'][0]['name'],
         }).execute()
     
-    st.success(f"Saved {len(idx)} tracks to Supabase!")
+    st.success(f"Saved {len(results['items'])} tracks to Supabase!")
 
+    # Fetch data from database
     data = supabase.table("user_tracks").select("*").eq("username", username).execute()
     df = pd.DataFrame(data.data)
     st.dataframe(df)
