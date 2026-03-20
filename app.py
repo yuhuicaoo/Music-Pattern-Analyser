@@ -79,6 +79,7 @@ def show_tracks(username):
                 background-color: #1a1a1a;
                 border-radius: 10px;
                 transition: background-color 0.2s;
+            }
             .track-card:hover { background-color: #2a2a2a; }
             .track-number { font-size: 14px; color: #888; width: 30px; text-align: center; }
             .track-image { width: 50px; height: 50px; border-radius: 5px; margin: 0 15px; }
