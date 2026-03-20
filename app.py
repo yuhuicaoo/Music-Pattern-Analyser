@@ -30,22 +30,38 @@ if "token" in query_params:
     username = user["display_name"]
     st.success(f"Hello {username}!")
 
-    # Fetch data from Spotify API and store in database
-    results = sp.current_user_top_tracks(limit=50, time_range="short_term")
-    for idx, track in enumerate(results["items"]):
-        supabase.table("user_tracks").insert({
-            "username": username,
-            "track_id": track['id'],
-            "track_name": track['name'],
-            "artist": track['artists'][0]['name'],
-        }).execute()
-    
-    st.success(f"Saved {len(results['items'])} tracks to Supabase!")
+    if "consent_given" not in st.session_state:
+        st.session_state.consent_given = False
 
-    # Fetch data from database
-    data = supabase.table("user_tracks").select("*").eq("username", username).execute()
-    df = pd.DataFrame(data.data)
-    df = df.drop('id', axis=1)
-    st.dataframe(df)
+    if not st.session_state.consent_give:
+        st.warning("Do you agree to giving access to your Spotify listening data and storing it in our database?")
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("Yes, I consent"):
+                st.session_state.consent_given = True
+                st.rerun()
+        with col2:
+            if st.button("No, I do not give consent"):
+                st.info("Your data will not be accessed or stored")
+                st.stop()
+    else:
+        # Fetch data from Spotify API and store in database
+        with st.spinner("Fetching your top tracks from Spotify..."):
+            results = sp.current_user_top_tracks(limit=50, time_range="short_term")
+            for idx, track in enumerate(results["items"]):
+                supabase.table("user_tracks").insert({
+                    "username": username,
+                    "track_id": track['id'],
+                    "track_name": track['name'],
+                    "artist": track['artists'][0]['name'],
+                }).execute()
+        
+
+        # Fetch data from database
+        with st.spinner("Loading your top 50 songs for this month"):
+            data = supabase.table("user_tracks").select("*").eq("username", username).execute()
+            df = pd.DataFrame(data.data)
+            df = df.drop('id', axis=1)
+        st.dataframe(df)
 else:
     st.info("Please log in with Spotify")
