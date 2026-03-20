@@ -2,6 +2,7 @@ import spotipy
 import pandas as pd
 import streamlit as st
 from supabase import create_client
+from html import escape
 
 SUPABASE_URL= st.secrets["supabase"]["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["supabase"]["SUPABASE_KEY"]
@@ -58,24 +59,74 @@ def show_tracks(username):
     with st.spinner("Loading your top 50 songs..."):
         data = supabase.table("user_tracks").select("*").eq("username", username).execute()
 
+    st.markdown("""
+        <style>
+            .track-card {
+                display: flex;
+                align-items: center;
+                padding: 10px;
+                margin-bottom: 8px;
+                background-color: #1a1a1a;
+                border-radius: 10px;
+                transition: background-color 0.2s;
+            }
+            .track-card:hover {
+                background-color: #2a2a2a;
+            }
+            .track-number {
+                font-size: 14px;
+                color: #888;
+                width: 30px;
+                text-align: center;
+            }
+            .track-image {
+                width: 50px;
+                height: 50px;
+                border-radius: 5px;
+                margin: 0 15px;
+            }
+            .track-name {
+                font-size: 15px;
+                font-weight: bold;
+                color: white;
+            }
+            .track-artist {
+                font-size: 13px;
+                color: #aaa;
+            }
+            .scroll-container {
+                height: 500px;
+                overflow-y: auto;
+                padding: 10px;
+                background-color: #111;
+                border-radius: 15px;
+                border: 1px solid #333;
+            }
+        </style>
+    """, unsafe_allow_html=True)
 
     st.subheader("Your Top 50 Tracks This Month")
 
-    with st.container(height=500):
-        for idx, row in enumerate(data.data):
-            col1, col2, col3 = st.columns([1, 2, 10])
+    tracks_html = '<div class="scroll-container">'
+    for idx, row in enumerate(data.data):
+        image_url = st.session_state.track_imgs.get(row["track_id"], "")
+        track_name = escape(row["track_name"])
+        artist = escape(row["artist"])
 
-            with col1:
-                st.write(idx + 1)
+        tracks_html += f"""
+            <div class="track-card">
+                <span class="track-number">{idx + 1}</span>
+                <img class="track-image" src="{image_url}" />
+                <div>
+                    <div class="track-name">{track_name}</div>
+                    <div class="track-artist">{artist}</div>
+                </div>
+            </div>
+        """
 
-            with col2:
-                image_url = st.session_state.track_imgs.get(row["track_id"])
-                if image_url:
-                    st.image(image_url, width=50)
+    tracks_html += '</div>'
 
-            with col3:
-                st.markdown(f"**{row['track_name']}**")
-                st.caption(row['artist'])
+    st.markdown(tracks_html, unsafe_allow_html=True)
 
 def main():
     st.title("Spotify Top Tracks Collector")
