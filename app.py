@@ -108,7 +108,7 @@ def show_tracks(username):
 
     tracks_html = '<div class="scroll-container">'
     for idx, row in enumerate(data.data):
-        image_url = st.session_state.track_img.get(row["track_id"], "")
+        image_url = st.session_state.track_imgs.get(row["track_id"], "")
         tracks_html += f"""
             <div class="track-card">
                 <span class="track-number">{idx + 1}</span>
