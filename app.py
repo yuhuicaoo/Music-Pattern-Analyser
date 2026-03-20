@@ -28,11 +28,11 @@ def show_consent():
     st.warning("Do you agree to giving access to your Spotify listening data and storing it in our database?")
     col1, col2 = st.columns(2)
     with col1:
-        if st.button("Yes, I consent"):
+        if st.button("Yes, I consent", use_container_width=True):
             st.session_state.consent_given = True
             st.rerun()
     with col2:
-        if st.button("No, I do not give consent"):
+        if st.button("No, I do not give consent", use_container_width=True):
             st.info("Your data will not be accessed or stored")
             st.stop()
 
