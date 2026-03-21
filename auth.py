@@ -113,17 +113,22 @@ def get_returning_user():
     
     user_id = cookie.get("user_id")
     if user_id:
-        profile = (
-            supabase.table("user_profiles")
-            .select("display_name")
-            .eq("user_id", user_id)
-            .single()
-            .execute().data
-        )
-        if profile:
-            st.session_state.user_id = user_id
-            st.session_state.display_name = profile["display_name"]
-            return user_id, profile["display_name"]
+        try:
+            profile = (
+                supabase.table("user_profiles")
+                .select("display_name")
+                .eq("user_id", user_id)
+                .single()
+                .execute().data
+            )
+            if profile:
+                st.session_state.user_id = user_id
+                st.session_state.display_name = profile["display_name"]
+                return user_id, profile["display_name"]
+        except Exception:
+            # cookie exists but user not in db, clear the cookie
+            cookie.remove("user_id")
+
     return None, None
 
 def show_login():
