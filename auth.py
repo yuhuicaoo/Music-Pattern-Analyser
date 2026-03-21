@@ -1,6 +1,7 @@
 import spotipy
 import streamlit as st
-from config import BACKEND_URL, supabase
+from config import supabase
+from pages.privacy_policy import show_privacy_policy_modal
 
 def get_spotify_client():
     return spotipy.Spotify(auth=st.query_params["token"])
@@ -26,21 +27,9 @@ def get_returning_user():
     return None, None
 
 def show_login():
-    st.markdown(f'''
-        <a href="{BACKEND_URL}/login" target="_self" style="
-            display: inline-block;
-            background-color: #1DB954;
-            color: white;
-            padding: 12px 30px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 16px;
-        ">Login with Spotify</a>
-    ''', unsafe_allow_html=True)
-
-    st.caption("By logging in you agree to our privacy policy.")
-    if st.button("View Privacy Policy"):
+    st.subheader("Welcome!")
+    st.caption("Login to see your top Spotify tracks.")
+    if st.button("Login with Spotify", type="primary"):
         show_privacy_policy_modal()
 
 def show_consent():
