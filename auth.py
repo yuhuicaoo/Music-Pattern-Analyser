@@ -26,18 +26,12 @@ def show_privacy_policy_modal():
     """)
     st.divider()
     # login button lives inside the modal
-    st.markdown(f'''
-        <a href="{BACKEND_URL}/login" target="_self" style="
-            display: inline-block;
-            background-color: #1DB954;
-            color: white;
-            padding: 12px 30px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 16px;
-        ">I agree, Login with Spotify</a>
-    ''', unsafe_allow_html=True)
+    st.link_button(
+        "I agree, Login with Spotify",
+        url=f"{BACKEND_URL}/login",
+        use_container_width=True,
+        type="primary"
+    )
 
 def get_spotify_client():
     return spotipy.Spotify(auth=st.query_params["token"])
