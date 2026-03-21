@@ -79,4 +79,5 @@ def show_disconnect_button():
                 # clear session state
                 for key in list(st.session_state.keys()):
                     del st.session_state[key]
+                st.query_params.clear()
                 st.rerun()
