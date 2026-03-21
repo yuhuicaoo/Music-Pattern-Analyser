@@ -30,8 +30,7 @@ TRACKS_CSS = """
 """
 
 def build_track_card(idx, row):
-    raw_img = st.session_state.track_imgs.get(row["track_id"], "")
-    image_url = img_to_base64(raw_img)
+    image_url = img_to_base64(row["image_url"])
     track_name = escape(row["track_name"])
     artist = escape(row["artist"])
 
