@@ -3,6 +3,7 @@ import streamlit.components.v1 as components
 from html import escape
 from utils import img_to_base64
 from data import load_user_tracks, delete_user_data
+from auth import cookie
 
 TRACKS_CSS = """
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
@@ -66,8 +67,8 @@ def show_disconnect_button():
         if st.button("Delete my data and disconnect", type="primary"):
             if confirm:
                 delete_user_data(st.session_state.user_id)
+                cookie.remove("user_id")
                 # clear session state
                 for key in list(st.session_state.keys()):
                     del st.session_state[key]
-                st.success("Your data has been deleted.")
                 st.rerun()
