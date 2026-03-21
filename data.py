@@ -59,7 +59,7 @@ def load_user_tracks(user_id):
         .eq("user_id", user_id)
         .eq("month", month_year)
         .order("rank")
-        .execute.data
+        .execute().data
     )
 
 def delete_user_data(user_id):
