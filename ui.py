@@ -2,7 +2,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 from html import escape
 from utils import img_to_base64
-from data import load_user_tracks
+from data import load_user_tracks, delete_user_data
 
 TRACKS_CSS = """
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
@@ -46,10 +46,27 @@ def build_track_card(idx, row):
         </div>
     """
 
-def show_tracks(username):
+def show_tracks(user_id):
     with st.spinner("Loading your top 50 songs..."):
-        tracks = load_user_tracks(username)
+        tracks = load_user_tracks(user_id)
 
     st.subheader("Your Top 50 Tracks This Month")
     cards = "".join(build_track_card(idx, row) for idx, row in enumerate(tracks))
     components.html(f"{TRACKS_CSS}<div>{cards}</div>", height=520, scrolling=True)
+
+def show_disconnect_button():
+    st.divider()
+    with st.expander("Disconnect Spotify Account"):
+        st.warning(
+            "This will permanently delete all your data from our database, "
+            "including your top tracks history. This cannot be undone."
+        )
+        confirm = st.checkbox("I understand this will delete all my data")
+        if confirm:
+            if st.button("Delete my data and disconnect", type="primary"):
+                delete_user_data(st.session_state.user_id)
+                # clear session state
+                for key in list(st.session_state.keys()):
+                    del st.session_state[key]
+                st.success("Your data has been deleted.")
+                st.rerun()

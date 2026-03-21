@@ -7,7 +7,7 @@ from auth import (
     show_consent,
 )
 from data import fetch_data_and_store, already_fetched_this_month
-from ui import show_tracks
+from ui import show_tracks, show_disconnect_button
 
 
 def main():
@@ -38,6 +38,7 @@ def main():
 
     with st.spinner("Displaying your top tracks this month"):
         show_tracks(user_id)
+    show_disconnect_button()
 
 
 

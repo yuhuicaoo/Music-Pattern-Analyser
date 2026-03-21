@@ -83,3 +83,7 @@ def load_user_tracks(user_id):
         .order("rank")
         .execute.data
     )
+
+def delete_user_data(user_id):
+    supabase.table("user_tracks").delete().eq("user_id", user_id).execute()
+    supabase.table("user_profiles").delete().eq("user_id",user_id).execute()
