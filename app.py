@@ -5,8 +5,14 @@ from auth import (
     save_user_session,
     show_login,
     show_consent,
+    get_spotify_client_for_user,
 )
-from data import fetch_data_and_store, already_fetched_this_month, load_user_tracks
+from data import (
+    fetch_data_and_store, 
+    needs_refresh, 
+    load_user_tracks
+)
+
 from ui import show_tracks, show_disconnect_button
 
 
@@ -23,12 +29,16 @@ def main():
         sp = get_spotify_client()
         save_user_session(sp)
         user_id, display_name = get_returning_user()
+
     st.success(f"Hello {display_name}!")
+
+    sp = get_spotify_client_for_user(user_id)
 
     # check if user has existing data
     existing_data = load_user_tracks(user_id)
-    if existing_data:
-        show_tracks(user_id)
+
+    if existing_data and not needs_refresh(user_id):
+        show_tracks(user_id, existing_data)
         show_disconnect_button()
         return
 
@@ -37,12 +47,10 @@ def main():
     if not st.session_state.consent_given:
         show_consent()
         return
-    
-    sp = get_spotify_client()
+
     fetch_data_and_store(sp, user_id)
     show_tracks(user_id)
     show_disconnect_button()
-
 
 if __name__ == "__main__":
     main()

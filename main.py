@@ -30,7 +30,9 @@ async def callback(request: Request):
 
     token_info = sp_oauth.get_access_token(code)
     access_token = token_info["access_token"]
+    refresh_token = token_info["refresh_token"]
+    expires_at = token_info["expires_at"]
 
     return RedirectResponse(
-        url=f"https://music-pattern-analyser.streamlit.app/?token={access_token}"
+        url=f"https://music-pattern-analyser.streamlit.app/?token={access_token}&refresh={refresh_token}&expires={expires_at}"
     )

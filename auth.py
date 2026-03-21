@@ -1,6 +1,19 @@
 import spotipy
 import streamlit as st
 from config import supabase, BACKEND_URL
+from datetime import datetime
+from streamlit_cookies_controller import CookieController
+from spotipy.oauth2 import SpotifyOAuth
+
+sp_oauth = SpotifyOAuth(
+    client_id=st.secrets["spotify"]["CLIENT_ID"],
+    client_secret=st.secrets["spotify"]["CLIENT_SECRET"],
+    redirect_uri=st.secrets["spotify"]["REDIRECT_URI"],
+    scope="user-top-read",
+    cache_path=None
+)
+
+cookie = CookieController()
 
 
 @st.dialog("Privacy Policy")
@@ -52,14 +65,56 @@ def save_user_session(sp):
         "user_id": user_id,
         "display_name": display_name,
         "access_token": st.query_params["token"],
+        "refresh_token": st.query_params["refresh"],
+        "expires_at": st.query_params["expires"]
     }, on_conflict="user_id").execute()
 
+    cookie.set("user_id", user_id)
     st.session_state.user_id = user_id
     st.session_state.display_name = display_name
+
+def get_spotify_client_for_user(user_id):
+    profile = (
+        supabase.table("user_profiles")
+        .select("access_token, refresh_token, token_expiry")
+        .eq("user_id", user_id)
+        .single()
+        .execute().data
+    )
+
+    time_now = datetime.now().timestamp()
+
+    if float(profile["token_expiry"]) < time_now:
+        # token expired, need to refresh token
+        token_info  = sp_oauth.refresh_access_token(profile["refresh_token"])
+
+        supabase.table("user_profiles").update({
+            "access_token": token_info["access_token"],
+            "token_expiry": token_info["expires_at"],
+        }).eq("user_id", user_id).execute()
+
+        return spotipy.Spotify(auth=token_info["access_token"])
+
+    return spotipy.Spotify(auth=profile["access_token"])
+
 
 def get_returning_user():
     if "user_id" in st.session_state:
         return st.session_state.user_id, st.session_state.display_name
+    
+    user_id = cookie.get("user_id")
+    if user_id:
+        profile = (
+            supabase.table("user_profiles")
+            .select("display_name")
+            .eq("user_id", user_id)
+            .single()
+            .execute().data
+        )
+        if profile:
+            st.session_state.user_id = user_id
+            st.session_state.display_name = profile["display_name"]
+            return user_id, profile["display_name"]
     return None, None
 
 def show_login():
