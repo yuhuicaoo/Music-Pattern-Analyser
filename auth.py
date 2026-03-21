@@ -66,7 +66,7 @@ def save_user_session(sp):
         "display_name": display_name,
         "access_token": st.query_params["token"],
         "refresh_token": st.query_params["refresh"],
-        "expires_at": st.query_params["expires"]
+        "token_expiry": st.query_params["expires"]
     }, on_conflict="user_id").execute()
 
     cookie.set("user_id", user_id)
