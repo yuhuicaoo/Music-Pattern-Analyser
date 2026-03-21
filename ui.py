@@ -47,10 +47,10 @@ def build_track_card(idx, row):
     """
 
 def show_tracks(user_id):
+    st.subheader("Your Top 50 Tracks This Month")
     with st.spinner("Loading your top 50 songs..."):
         tracks = load_user_tracks(user_id)
 
-    st.subheader("Your Top 50 Tracks This Month")
     cards = "".join(build_track_card(idx, row) for idx, row in enumerate(tracks))
     components.html(f"{TRACKS_CSS}<div>{cards}</div>", height=520, scrolling=True)
 
@@ -62,8 +62,8 @@ def show_disconnect_button():
             "including your top tracks history. This cannot be undone."
         )
         confirm = st.checkbox("I understand this will delete all my data")
-        if confirm:
-            if st.button("Delete my data and disconnect", type="primary"):
+        if st.button("Delete my data and disconnect", type="primary"):
+            if confirm:
                 delete_user_data(st.session_state.user_id)
                 # clear session state
                 for key in list(st.session_state.keys()):
