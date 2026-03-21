@@ -6,7 +6,7 @@ from auth import (
     show_login,
     show_consent,
 )
-from data import fetch_data_and_store, already_fetched_this_month
+from data import fetch_data_and_store, already_fetched_this_month, load_user_tracks
 from ui import show_tracks, show_disconnect_button
 
 
@@ -23,23 +23,25 @@ def main():
         sp = get_spotify_client()
         save_user_session(sp)
         user_id, display_name = get_returning_user()
-
     st.success(f"Hello {display_name}!")
 
-    st.session_state.setdefault("consent_given", False)
+    # check if user has existing data
+    existing_data = load_user_tracks(user_id)
+    if existing_data:
+        show_tracks(user_id)
+        show_disconnect_button()
+        return
 
+    # if new user (no existing data)
+    st.session_state.setdefault("consent_given", False)
     if not st.session_state.consent_given:
         show_consent()
         return
     
-    if not already_fetched_this_month(user_id):
-        sp = get_spotify_client()
-        fetch_data_and_store(sp, user_id)
-
-    with st.spinner("Displaying your top tracks this month"):
-        show_tracks(user_id)
+    sp = get_spotify_client()
+    fetch_data_and_store(sp, user_id)
+    show_tracks(user_id)
     show_disconnect_button()
-
 
 
 if __name__ == "__main__":
