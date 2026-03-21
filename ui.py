@@ -59,7 +59,7 @@ def show_tracks(user_id, tracks=None):
     st.markdown("""
         <style>
             div[data-testid="stExpander"] {
-                margin-top: 2rem;
+                margin-top: 12px;
             }
         </style>
     """, unsafe_allow_html=True)
