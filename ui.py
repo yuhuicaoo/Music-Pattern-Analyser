@@ -48,11 +48,12 @@ def build_track_card(idx, row):
 
 def show_tracks(user_id, tracks=None):
     st.subheader("Your Top 50 Tracks This Month")
-    with st.spinner("Loading your top 50 songs..."):
-        if tracks is None:
+    if tracks is None:
+        with st.spinner("Loading your top 50 songs..."):
             tracks = load_user_tracks(user_id)
-        cards = "".join(build_track_card(idx, row) for idx, row in enumerate(tracks))
-    
+
+
+    cards = "".join(build_track_card(idx, row) for idx, row in enumerate(tracks))
     components.html(f"{TRACKS_CSS}<div>{cards}</div>", height=480, scrolling=True)
 
 def show_disconnect_button():
