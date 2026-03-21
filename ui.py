@@ -74,7 +74,8 @@ def show_disconnect_button():
         if st.button("Delete my data and disconnect", type="primary"):
             if confirm:
                 delete_user_data(st.session_state.user_id)
-                cookie.remove("user_id")
+                if cookie.get("user_id"):
+                    cookie.remove("user_id")
                 # clear session state
                 for key in list(st.session_state.keys()):
                     del st.session_state[key]
