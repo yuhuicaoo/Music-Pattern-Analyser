@@ -60,13 +60,18 @@ def save_user_session(sp):
     user_id = user['id']
     display_name = user['display_name']
 
+    # convert unix timestamp to isoformat
+    expires_at = datetime.fromtimestamp(
+        int(st.query_params["expires"])
+    ).isoformat()
+
     # insert user data into database
     supabase.table("user_profiles").upsert({
         "user_id": user_id,
         "display_name": display_name,
         "access_token": st.query_params["token"],
         "refresh_token": st.query_params["refresh"],
-        "token_expiry": st.query_params["expires"]
+        "token_expiry": expires_at
     }, on_conflict="user_id").execute()
 
     cookie.set("user_id", user_id)
@@ -82,15 +87,19 @@ def get_spotify_client_for_user(user_id):
         .execute().data
     )
 
-    time_now = datetime.now().timestamp()
+    token_expiry = datetime.fromisoformat(profile["token_expiry"])
 
-    if float(profile["token_expiry"]) < time_now:
+    if datetime.now() > token_expiry:
         # token expired, need to refresh token
         token_info  = sp_oauth.refresh_access_token(profile["refresh_token"])
 
+        new_expiry = new_expiry = datetime.fromtimestamp(
+            token_info["expires_at"]
+        ).isoformat()
+
         supabase.table("user_profiles").update({
             "access_token": token_info["access_token"],
-            "token_expiry": token_info["expires_at"],
+            "token_expiry": new_expiry
         }).eq("user_id", user_id).execute()
 
         return spotipy.Spotify(auth=token_info["access_token"])
