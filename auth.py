@@ -5,7 +5,7 @@ from config import supabase, BACKEND_URL
 
 @st.dialog("Privacy Policy")
 def show_privacy_policy_modal():
-    st.write("""
+    st.markdown("""
     ### What we collect
     - Your Spotify display name and user ID
     - Your top 50 tracks each month including track name and artist
@@ -23,15 +23,24 @@ def show_privacy_policy_modal():
     ### Third parties
     Your data is stored in Supabase. It is never sold or shared with 
     any third party.
+                
+    ### Contact
+    [yuhuicao20@gmail.com]
     """)
     st.divider()
     # login button lives inside the modal
-    st.link_button(
-        "I agree, Login with Spotify",
-        url=f"{BACKEND_URL}/login",
-        use_container_width=True,
-        type="primary"
-    )
+    st.markdown(f'''
+        <a href="{BACKEND_URL}/login" target="_self" style="
+            display: inline-block;
+            background-color: #1DB954;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+        ">I agree, Login with Spotify</a>
+    ''', unsafe_allow_html=True)
 
 def get_spotify_client():
     return spotipy.Spotify(auth=st.query_params["token"])
