@@ -54,7 +54,7 @@ def show_tracks(user_id, tracks=None):
 
 
     cards = "".join(build_track_card(idx, row) for idx, row in enumerate(tracks))
-    components.html(f"{TRACKS_CSS}<div>{cards}</div>", height=520, scrolling=True)
+    components.html(f"{TRACKS_CSS}<div>{cards}</div>", height=500, scrolling=True)
 
 def show_disconnect_button():
     st.divider()
