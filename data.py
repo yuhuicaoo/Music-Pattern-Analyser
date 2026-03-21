@@ -31,26 +31,6 @@ def store_tracks(user_id, tracks):
         rows, on_conflict="user_id,track_id,month"
     ).execute()
 
-
-def fetch_and_store_audio_features(sp, track_ids):
-    features = sp.audio_features(track_ids)
-    rows = [
-        {
-            "track_id": feature["id"],
-            "danceability": feature["danceability"],
-            "energy": feature["energy"],
-            "valence": feature["valence"],
-            "tempo": feature["tempo"],
-            "accousticness": feature["accousticness"],
-            "instrumentalness": feature["instrumentalness"],
-            "speechiness": feature["speechiness"],
-        }
-        for feature in features
-        if feature is not None
-    ]
-    supabase.table("track_features").upsert(rows, on_conflict="track_id").execute()
-
-
 def already_fetched_this_month(user_id):
     month_year = datetime.now().strftime("%m-%Y")
     result = (
@@ -67,9 +47,7 @@ def already_fetched_this_month(user_id):
 def fetch_data_and_store(sp, user_id):
     with st.spinner("Fetching your top tracks from Spotify..."):
         tracks = fetch_top_tracks(sp)
-        track_ids = [track["id"] for track in tracks]
         cache_track_images(tracks)
-        fetch_and_store_audio_features(sp, track_ids)
         store_tracks(user_id, tracks)
 
 
