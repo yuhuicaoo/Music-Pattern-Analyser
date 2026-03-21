@@ -5,24 +5,8 @@ from config import supabase, BACKEND_URL
 
 @st.dialog("Privacy Policy")
 def show_privacy_policy_modal():
-    st.markdown("""
-    ### What we collect
-    - Your Spotify display name and user ID
-    - Your top 50 tracks each month including track name and artist
-
-    ### Why we collect it
-    Solely to display your top tracks and compare them with other users.
-
-    ### How long we keep it
-    Only your current data is stored. It is replaced each time you log in.
-
-    ### Your rights
-    You can delete all your data at any time using the disconnect button 
-    on the main page.
-
-    ### Third parties
-    Your data is stored in Supabase. It is never sold or shared with 
-    any third party.
+    st.write("""
+    Test
     """)
     st.divider()
     # login button lives inside the modal
