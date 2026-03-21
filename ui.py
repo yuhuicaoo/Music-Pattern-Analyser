@@ -56,8 +56,15 @@ def show_tracks(user_id, tracks=None):
     cards = "".join(build_track_card(idx, row) for idx, row in enumerate(tracks))
     components.html(f"{TRACKS_CSS}<div>{cards}</div>", height=480, scrolling=True)
 
+    st.markdown("""
+        <style>
+            div[data-testid="stExpander"] {
+                margin-top: -2rem;
+            }
+        </style>
+    """, unsafe_allow_html=True)
+
 def show_disconnect_button():
-    st.divider()
     with st.expander("Disconnect Spotify Account"):
         st.warning(
             "This will permanently delete all your data from our database, "
