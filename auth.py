@@ -23,9 +23,6 @@ def show_privacy_policy_modal():
     ### Third parties
     Your data is stored in Supabase. It is never sold or shared with 
     any third party.
-                
-    ### Contact
-    [yuhuicao20@gmail.com]
     """)
     # login button lives inside the modal
     st.markdown(f'''
