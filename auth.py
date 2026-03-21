@@ -27,15 +27,15 @@ def show_privacy_policy_modal():
     ### Contact
     [yuhuicao20@gmail.com]
     """)
-    st.divider()
     # login button lives inside the modal
     st.markdown(f'''
         <a href="{BACKEND_URL}/login" target="_self" style="
             display: inline-block;
             background-color: #1DB954;
+            width: 100%;
             color: white;
-            padding: 12px 30px;
-            border-radius: 25px;
+            padding: 8px 24px;
+            border-radius: 16px;
             text-decoration: none;
             font-weight: bold;
             font-size: 16px;
