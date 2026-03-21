@@ -6,9 +6,9 @@ from streamlit_cookies_controller import CookieController
 from spotipy.oauth2 import SpotifyOAuth
 
 sp_oauth = SpotifyOAuth(
-    client_id=st.secrets["spotify"]["CLIENT_ID"],
-    client_secret=st.secrets["spotify"]["CLIENT_SECRET"],
-    redirect_uri=st.secrets["spotify"]["REDIRECT_URI"],
+    client_id=st.secrets["spotify"]["SPOTIFY_CLIENT_ID"],
+    client_secret=st.secrets["spotify"]["SPOTIFY_CLIENT_SECRET"],
+    redirect_uri=st.secrets["spotify"]["SPOTIFY_REDIRECT_URI"],
     scope="user-top-read",
     cache_path=None
 )
