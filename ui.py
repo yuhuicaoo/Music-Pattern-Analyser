@@ -52,9 +52,9 @@ def show_tracks(user_id, tracks=None):
         with st.spinner("Loading your top 50 songs..."):
             tracks = load_user_tracks(user_id)
 
-
-    cards = "".join(build_track_card(idx, row) for idx, row in enumerate(tracks))
-    components.html(f"{TRACKS_CSS}<div>{cards}</div>", height=500, scrolling=True)
+    with st.spinner():
+        cards = "".join(build_track_card(idx, row) for idx, row in enumerate(tracks))
+        components.html(f"{TRACKS_CSS}<div>{cards}</div>", height=500, scrolling=True)
 
 def show_disconnect_button():
     st.divider()
