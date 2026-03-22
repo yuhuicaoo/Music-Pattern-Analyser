@@ -107,7 +107,7 @@ def login_user(token_info):
 
 
 def get_token_from_session():
-    key = st.query_params['session']
+    key = st.query_params.get("session")
     if not key:
         return None
     
