@@ -4,14 +4,11 @@ from auth import (
     get_returning_user,
     get_token_from_session,
     login_user,
-    save_user_session,
     show_login,
-    get_spotify_client_for_user,
 )
 
 from data import fetch_data_and_store
 from ui import (
-    show_consent,
     show_disconnect_button,
     show_top_artists, 
     show_users,
