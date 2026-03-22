@@ -45,7 +45,7 @@ def main():
     tab1, tab2, tab3 = st.tabs(["My Top Tracks", "My Top Artists", "Users"])
 
     with tab1:
-        show_my_tracks(user_id)
+        show_my_tracks(sp, user_id)
     with tab2:
         show_top_artists(user_id)
     with tab3:
