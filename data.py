@@ -25,12 +25,11 @@ def fetch_and_save_top_artists(sp, user_id):
     artists = [
         {
             "user_id": user_id,
-            "track_id": artist["id"],
-            "track_name": artist["name"],
-            "artist": artist["artists"][0]["name"],
+            "artist_id": artist["id"],
+            "artist_name": artist["name"],
             "rank": idx + 1,
             "image_url": artist["album"]["images"][0]["url"],
-            "track_url": artist["external_urls"]["spotify"]
+            "artist_url": artist["external_urls"]["spotify"]
         }
         for idx, artist in enumerate(top_artists)
     ]
