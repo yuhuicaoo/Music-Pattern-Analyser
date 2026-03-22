@@ -4,6 +4,7 @@ from config import supabase, BACKEND_URL
 from datetime import datetime
 from streamlit_cookies_controller import CookieController
 from spotipy.oauth2 import SpotifyOAuth
+from ui import show_users
 
 sp_oauth = SpotifyOAuth(
     client_id=st.secrets["spotify"]["SPOTIFY_CLIENT_ID"],
@@ -137,6 +138,8 @@ def show_login():
     st.caption("Login to see your top Spotify tracks.")
     if st.button("Login with Spotify", type="primary"):
         show_privacy_policy_modal()
+    
+    show_users()
 
 def show_consent():
     st.warning("Do you agree to giving access to your Spotify listening data and storing it in our database?")
