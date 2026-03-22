@@ -35,7 +35,7 @@ def main():
     
     st.subheader(f"Hello {display_name}!")
 
-    tab1, tab2 = st.tabs("My Tracks", "Users")
+    tab1, tab2 = st.tabs(["My Tracks", "Users"])
 
     with tab1:
         sp = get_spotify_client_for_user(user_id)
