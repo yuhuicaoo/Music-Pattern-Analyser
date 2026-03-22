@@ -16,7 +16,7 @@ TRACKS_CSS = """
         display: flex;
         align-items: center;
         padding: 10px;
-        margin-bottom: 8px;
+        margin-bottom: 4px;
         background-color: #1a1a1a;
         border-radius: 10px;
         transition: background-color 0.2s;
@@ -73,7 +73,6 @@ def show_tracks(user_id, tracks=None):
         <style>
             div[data-testid="stExpander"] {
                 margin-top: 4px;
-                margin-bottom: 0px
             }
         </style>
     """, unsafe_allow_html=True)
