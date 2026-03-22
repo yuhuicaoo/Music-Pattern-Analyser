@@ -98,6 +98,7 @@ def login_user(token_info):
         on_conflict="user_id",
     ).execute()
 
+    st.session_state.clear()
     cookie.set("user_id", user_id)
     st.session_state.user_id = user_id
     st.session_state.display_name = display_name
@@ -106,11 +107,12 @@ def login_user(token_info):
 
 
 def get_token_from_session():
-    key = st.query_params.get("session")
+    key = st.query_params['session']
     if not key:
         return None
     
     response = requests.get(f"{BACKEND_URL}/token/{key}").json()
+    
     st.query_params.clear()
     return None if "error" in response else response
 
