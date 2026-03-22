@@ -2,7 +2,6 @@ import os
 from fastapi import FastAPI, Request
 from spotipy.oauth2 import SpotifyOAuth
 from fastapi.responses import RedirectResponse
-from config import SCOPE
 
 app = FastAPI()
 
@@ -10,6 +9,7 @@ app = FastAPI()
 CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
 CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
 REDIRECT_URI  = os.getenv("SPOTIFY_REDIRECT_URI")
+SCOPE = "user-top-read user-read-private user-read-email"
 
 sp_oauth = SpotifyOAuth(
     client_id=CLIENT_ID,
