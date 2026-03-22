@@ -78,8 +78,8 @@ def save_user_session(sp):
     supabase.table("user_profiles").upsert({
         "user_id": user_id,
         "display_name": display_name,
-        "access_token": st.query_params["token"],
-        "refresh_token": st.query_params["refresh"],
+        "access_token": token_info["access_token"],
+        "refresh_token": token_info["refresh_token"],
         "token_expiry": expires_at,
         "profile_img": profile_img
     }, on_conflict="user_id").execute()
