@@ -36,7 +36,7 @@ def main():
         show_login()
         return
     
-    user_id, display_name = get_returning_user(session_user_id)
+    user_id, display_name = get_returning_user()
     if not user_id:
         show_login()
         return
