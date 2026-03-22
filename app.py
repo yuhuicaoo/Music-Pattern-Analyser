@@ -30,7 +30,6 @@ def main():
         save_user_session(sp)
         user_id, display_name = get_returning_user()
 
-    st.subheader(f"Hello {display_name}!")
 
     sp = get_spotify_client_for_user(user_id)
 
@@ -38,7 +37,7 @@ def main():
     existing_data = load_user_tracks(user_id)
 
     if existing_data and not needs_refresh(user_id):
-        show_tracks(user_id, existing_data)
+        show_tracks(user_id, display_name existing_data)
         show_disconnect_button()
         return
 
@@ -49,7 +48,7 @@ def main():
         return
 
     fetch_data_and_store(sp, user_id)
-    show_tracks(user_id)
+    show_tracks(user_id, display_name)
     show_disconnect_button()
 
 if __name__ == "__main__":
