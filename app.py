@@ -23,12 +23,13 @@ def main():
         </style>
     """, unsafe_allow_html=True)
 
-    token_info = get_token_from_session()
-    if token_info:
-        user_id = login_user(token_info)
-        sp = get_spotify_client(user_id)
-        fetch_data_and_store(sp, user_id)
-        st.rerun()
+    if not st.session_state.get("user_id"):
+        token_info = get_token_from_session()
+        if token_info:
+            user_id = login_user(token_info)
+            sp = get_spotify_client(user_id)
+            fetch_data_and_store(sp, user_id)
+            st.rerun()
 
     # check if already logged in
     session_user_id = st.session_state.get("user_id")
