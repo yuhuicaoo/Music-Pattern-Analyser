@@ -198,7 +198,8 @@ def show_top_artists(user_id):
         .artists-container {
             display: flex;
             flex-direction: row;
-            gap: 16px;
+            justify-content: space-between
+            width: 100%;
             padding: 10px 0;
         }
         .artist-card {
@@ -206,7 +207,7 @@ def show_top_artists(user_id):
             flex-direction: column;
             align-items: center;
             gap: 8px;
-            min-width: 100px;
+            flex: 1;
         }
         .artist-image {
             width: 80px;
@@ -215,13 +216,12 @@ def show_top_artists(user_id):
             object-fit: cover;
         }
         .artist-rank {
-            font-size: 11px;
-            color: #1DB954;
-            font-family: Inter, sans-serif;
+            font-size: 12px;
+            color: white;
             font-weight: bold;
         }
         .artist-name {
-            font-size: 13px;
+            font-size: 16px;
             color: white;
             text-align: center;
             font-family: Inter, sans-serif;
