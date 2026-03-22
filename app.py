@@ -34,11 +34,13 @@ def main():
     session_user_id = st.session_state.get("user_id")
     if not session_user_id:
         show_login()
+        show_users()
         return
     
     user_id, display_name = get_returning_user()
     if not user_id:
         show_login()
+        show_users()
         return
 
     # logged in
