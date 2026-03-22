@@ -116,7 +116,7 @@ def get_token_from_session():
 
 
 def get_returning_user():
-    if "user_id" in st.session_state:
+    if "user_id" in st.session_state and "display_name" in st.session_state:
         return st.session_state.user_id, st.session_state.display_name
 
     user_id = cookie.get("user_id")

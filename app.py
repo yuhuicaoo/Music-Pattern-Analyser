@@ -31,14 +31,14 @@ def main():
         st.rerun()
 
     # check if already logged in
-    user_id = get_returning_user()
+    user_id, display_name = get_returning_user()
     
     if not user_id:
         show_login()
 
     # logged in
     st.title("Spotify Music Tracker")
-    st.caption(f"Logged in as **{st.session_state.display_name}**")
+    st.caption(f"Logged in as **{display_name}**")
     show_disconnect_button()
 
     tab1, tab2, tab3 = st.tabs(["My Top Tracks", "My Top Artists", "Users"])
