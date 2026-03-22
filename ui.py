@@ -144,8 +144,8 @@ def show_users():
             font-size: 24px;
         }
         .user-name {
-            font-size: 12px;
-            color: #aaa;
+            font-size: 16px;
+            color: white;
             text-align: center;
             font-family: Inter, sans-serif;
         }
