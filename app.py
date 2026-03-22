@@ -37,7 +37,7 @@ def main():
     existing_data = load_user_tracks(user_id)
 
     if existing_data and not needs_refresh(user_id):
-        show_tracks(user_id, display_name existing_data)
+        show_tracks(user_id, display_name, existing_data)
         show_disconnect_button()
         return
 
