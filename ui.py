@@ -3,6 +3,7 @@ import streamlit.components.v1 as components
 from html import escape
 from data import load_user_tracks, delete_user_data
 from auth import cookie
+import supabase
 
 TRACKS_CSS = """
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
@@ -78,3 +79,80 @@ def show_disconnect_button():
                     del st.session_state[key]
                 st.query_params.clear()
                 st.rerun()
+
+def load_all_users():
+    return (
+        supabase.table("user_profiles")
+        .select("display_name, profile_img")
+        .execute().data
+    )
+
+def show_users():
+    users = load_all_users()
+    if not users:
+        return
+    
+    st.divider()
+    st.subheader("Current Users")
+    
+    users_html = """
+    <style>
+        .users-container {
+            display: flex;
+            flex-direction: row;
+            gap: 16px;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+        .user-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            min-width: 80px;
+        }
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .user-avatar-placeholder {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        .user-name {
+            font-size: 12px;
+            color: #aaa;
+            text-align: center;
+            font-family: Inter, sans-serif;
+        }
+    </style>
+    <div class="users-container">
+    """
+
+    for user in users:
+        display_name = user['display_name']
+        profile_img = user['profile image']
+        placeholder_img = display_name[0].upper()
+
+        if profile_img:
+            avatar = f'<img class="user-avatar" src="{profile_img}" />'
+        else:
+            avatar = f'<div class="user-avatar-placeholder">{placeholder_img}</div>'
+
+        users_html += f"""
+            <div class="user-card">
+                {avatar}
+                <div class="user-name">{display_name}</div>
+            </div>
+        """
+
+    users_html += "</div>"
+    components.html(users_html, height=120)
