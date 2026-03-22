@@ -31,15 +31,19 @@ def main():
         st.rerun()
 
     # check if already logged in
-    user_id, display_name = get_returning_user()
+    session_user_id = st.session_state.get("user_id")
+    if not session_user_id:
+        show_login()
+        return
     
+    user_id, display_name = get_returning_user(session_user_id)
     if not user_id:
         show_login()
         return
 
     # logged in
     sp = get_spotify_client(user_id)
-    
+
     st.title("Spotify Music Tracker")
     st.caption(f"Logged in as **{display_name}**")
     show_disconnect_button(user_id)

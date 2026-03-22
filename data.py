@@ -17,8 +17,8 @@ def fetch_and_save_top_tracks(sp, user_id):
         }
         for idx, track in enumerate(top_tracks)
     ]
-    supabase.table("user_tracks").delete().eq("user_id", user_id).execute()
-    supabase.table("user_tracks").insert(tracks).execute()
+    supabase.table("user_tracks").upsert(tracks, on_conflict="user_id,rank").execute()
+
 
 def fetch_and_save_top_artists(sp, user_id):
     top_artists = sp.current_user_top_artists(limit=5, time_range="short_term")["items"]
@@ -33,8 +33,7 @@ def fetch_and_save_top_artists(sp, user_id):
         }
         for idx, artist in enumerate(top_artists)
     ]
-    supabase.table("user_artists").delete().eq("user_id", user_id).execute()
-    supabase.table("user_artists").insert(artists).execute()
+    supabase.table("user_artists").upsert(artists, on_conflict="user_id, rank").execute()
 
 def fetch_data_and_store(sp, user_id):
     if needs_refresh(user_id):

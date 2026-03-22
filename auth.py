@@ -99,7 +99,6 @@ def login_user(token_info):
     ).execute()
 
     st.session_state.clear()
-    cookie.set("user_id", user_id)
     st.session_state.user_id = user_id
     st.session_state.display_name = display_name
 
@@ -118,33 +117,16 @@ def get_token_from_session():
 
 
 def get_returning_user():
-    if "user_id" in st.session_state and "display_name" in st.session_state:
-        return st.session_state.user_id, st.session_state.display_name
+    user_id = st.session_state.get("user_id")
+    display_name = st.session_state.get("display_name")
 
-    user_id = cookie.get("user_id")
-    if user_id:
-        try:
-            profile = (
-                supabase.table("user_profiles")
-                .select("display_name")
-                .eq("user_id", user_id)
-                .single()
-                .execute()
-                .data
-            )
-            if profile:
-                st.session_state.user_id = user_id
-                st.session_state.display_name = profile["display_name"]
-                return user_id, profile["display_name"]
-        except Exception:
-            # cookie exists but user not in db, clear the cookie
-            cookie.remove("user_id")
+    if not user_id:
+        return None, None
 
-    return None, None
+    return user_id, display_name
 
 def logout_user(user_id):
     delete_user_data(user_id)
-    cookie.remove("user_id")
     st.session_state.clear()
 
 def show_login():
