@@ -26,7 +26,7 @@ def main():
 
     user_id, display_name = get_returning_user()
 
-    if not user_id and "token" not in st.query_params:
+    if not user_id and "session" not in st.query_params:
         show_login()
         return
 

@@ -51,7 +51,17 @@ def show_privacy_policy_modal():
     ''', unsafe_allow_html=True)
 
 def get_spotify_client():
-    return spotipy.Spotify(auth=st.query_params["token"])
+    key = st.query_params.get("session")
+    if not key:
+        return None
+    
+    response = response.get(f"{BACKEND_URL}/token/{key}")
+    token_info = response.json()
+    if "error" in token_info:
+        return None
+    
+    st.session_state.token_info = token_info
+    return spotipy.Spotify(auth=token_info["access_token"])
 
 def save_user_session(sp):
     user = sp.me()
@@ -60,9 +70,8 @@ def save_user_session(sp):
     profile_img = user['images'][0]['url']
 
     # convert unix timestamp to isoformat
-    expires_at = datetime.fromtimestamp(
-        int(st.query_params["expires"])
-    ).isoformat()
+    token_info= st.session_state.token_info
+    expires_at = datetime.fromtimestamp(token_info["expires_at"]).isoformat()
 
     # insert user data into database
     supabase.table("user_profiles").upsert({

@@ -2,6 +2,7 @@ import os
 from fastapi import FastAPI, Request
 from spotipy.oauth2 import SpotifyOAuth
 from fastapi.responses import RedirectResponse
+import secrets
 
 app = FastAPI()
 
@@ -19,6 +20,8 @@ sp_oauth = SpotifyOAuth(
     cache_path=None,
 )
 
+token_store = {}
+
 @app.get("/login")
 def login():
     auth_url = sp_oauth.get_authorize_url()
@@ -29,10 +32,16 @@ async def callback(request: Request):
     code = request.query_params.get("code")
 
     token_info = sp_oauth.get_access_token(code)
-    access_token = token_info["access_token"]
-    refresh_token = token_info["refresh_token"]
-    expires_at = token_info["expires_at"]
+    key = secrets.token_urlsafe(32)
+    token_store[key]= token_info
 
     return RedirectResponse(
-        url=f"https://music-pattern-analyser.streamlit.app/?token={access_token}&refresh={refresh_token}&expires={expires_at}"
+        url=f"https://music-pattern-analyser.streamlit.app/?session={key}"
     )
+
+@app.get("/token/{key}")
+def get_token(key):
+    token = token_store.pop(key, None)
+    if not token:
+        return {"error": "Invalid or expired session"}
+    return token
