@@ -17,7 +17,6 @@ sp_oauth = SpotifyOAuth(
     redirect_uri=REDIRECT_URI,
     scope=SCOPE,
     cache_path=None,
-    show_dialog=True
 )
 
 @app.get("/login")
