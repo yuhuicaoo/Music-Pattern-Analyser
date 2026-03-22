@@ -21,7 +21,7 @@ def main():
             h1 { margin-bottom: 0rem; }
         </style>
     """, unsafe_allow_html=True)
-    st.title("Spotify Top Tracks Collector")
+    st.title("Spotify Top Tracks & Artists Collector")
 
     user_id, display_name = get_returning_user()
 
