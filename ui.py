@@ -49,7 +49,6 @@ def show_tracks(user_id, display_name, tracks=None):
     if tracks is None:
         tracks = load_user_tracks(user_id)
 
-    st.subheader(f"Hello {display_name}!")
     st.subheader("Your Top 50 Tracks This Month")
     cards = "".join(build_track_card(idx, row) for idx, row in enumerate(tracks))
     components.html(f"{TRACKS_CSS}<div>{cards}</div>", height=480, scrolling=True)

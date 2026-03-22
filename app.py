@@ -29,7 +29,8 @@ def main():
         sp = get_spotify_client()
         save_user_session(sp)
         user_id, display_name = get_returning_user()
-
+    
+    st.subheader(f"Hello {display_name}!")
 
     sp = get_spotify_client_for_user(user_id)
 
