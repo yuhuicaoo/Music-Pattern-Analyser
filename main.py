@@ -3,24 +3,10 @@ from fastapi import FastAPI, Request
 from spotipy.oauth2 import SpotifyOAuth
 from fastapi.responses import RedirectResponse
 import secrets
+from config import supabase, sp_oauth
+import requests as req
 
 app = FastAPI()
-
-# Spotify keys
-CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
-CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
-REDIRECT_URI  = os.getenv("SPOTIFY_REDIRECT_URI")
-SCOPE = "user-top-read user-read-private user-read-email"
-
-sp_oauth = SpotifyOAuth(
-    client_id=CLIENT_ID,
-    client_secret=CLIENT_SECRET,
-    redirect_uri=REDIRECT_URI,
-    scope=SCOPE,
-    cache_path=None,
-)
-
-token_store = {}
 
 @app.get("/login")
 def login():
@@ -33,7 +19,11 @@ async def callback(request: Request):
 
     token_info = sp_oauth.get_access_token(code)
     key = secrets.token_urlsafe(32)
-    token_store[key]= token_info
+
+    supabase.table("spotify_sessions").insert({
+        "key": key,
+        "token": token_info
+    }).execute()
 
     return RedirectResponse(
         url=f"https://music-pattern-analyser.streamlit.app/?session={key}"
@@ -41,7 +31,19 @@ async def callback(request: Request):
 
 @app.get("/token/{key}")
 def get_token(key):
-    token = token_store.pop(key, None)
-    if not token:
+    result = (
+        supabase.table("spotify_sessions")
+        .select("token")
+        .eq("key", key)
+        .single()
+        .execute()    
+    )
+
+    if not result.data:
         return {"error": "Invalid or expired session"}
+
+    token = result.data["token"]
+
+    supabase.table("spotify_sessions").delete().eq("key",key).execute()
+
     return token
