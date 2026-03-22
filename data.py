@@ -4,7 +4,7 @@ from config import supabase
 
 
 def fetch_and_save_top_tracks(sp, user_id):
-    top_tracks =  sp.current_user_top_tracks(limit=50, time_range="short_term")["items"]
+    top_tracks = sp.current_user_top_tracks(limit=50, time_range="short_term")["items"]
     tracks = [
         {
             "user_id": user_id,

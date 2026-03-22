@@ -13,7 +13,7 @@ sp_oauth = SpotifyOAuth(
     client_secret=os.getenv("SPOTIFY_CLIENT_SECRET"),
     redirect_uri=os.getenv("SPOTIFY_REDIRECT_URI"),
     scope="user-top-read user-read-private user-read-email",
-    cache_handler=None,
+    cache_path=None,
     show_dialog=True
 )
 

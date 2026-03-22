@@ -112,8 +112,6 @@ def load_all_users():
         .data
     )
     
-
-
 def show_users():
     users = load_all_users()
     if not users:

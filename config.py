@@ -6,10 +6,6 @@ from spotipy.oauth2 import SpotifyOAuth
 
 BACKEND_URL = "https://music-pattern-analyser.onrender.com"
 
-SUPABASE_URL = st.secrets["supabase"]["SUPABASE_URL"]
-SUPABASE_KEY = st.secrets["supabase"]["SUPABASE_KEY"]
-
-supabase = create_client(supabase_url=SUPABASE_URL, supabase_key=SUPABASE_KEY)
 cookie = CookieController()
 
 sp_oauth = SpotifyOAuth(
@@ -17,6 +13,6 @@ sp_oauth = SpotifyOAuth(
     client_secret=st.secrets["spotify"]["SPOTIFY_CLIENT_SECRET"],
     redirect_uri=st.secrets["spotify"]["SPOTIFY_REDIRECT_URI"],
     scope="user-top-read user-read-private user-read-email",
-    cache_handler=None,
+    cache_path=None,
     show_dialog=True
 )
