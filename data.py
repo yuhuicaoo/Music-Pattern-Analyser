@@ -33,7 +33,6 @@ def refresh_user_artists(user_id, artists):
             "artist_name": artist["name"],
             "rank": idx + 1,
             "image_url": artist["images"][0]["url"],
-            "genres": artist["genres"]  
         }
         for idx, artist in enumerate(artists)
     ]

@@ -227,12 +227,6 @@ def show_top_artists(user_id):
             font-family: Inter, sans-serif;
             font-weight: bold;
         }
-        .artist-genres {
-            font-size: 11px;
-            color: #aaa;
-            text-align: center;
-            font-family: Inter, sans-serif;
-        }
     </style>
     <div class="artists-container">
     """
@@ -241,14 +235,12 @@ def show_top_artists(user_id):
         img = artist.get("image_url", "")
         name = artist["artist_name"]
         rank = artist["rank"]
-        genres = ", ".join(artist.get("genres", [])[:2])  # show max 2 genres
 
         artists_html += f"""
             <div class="artist-card">
                 <div class="artist-rank">#{rank}</div>
                 <img class="artist-image" src="{img}" />
                 <div class="artist-name">{name}</div>
-                <div class="artist-genres">{genres}</div>
             </div>
         """
 
