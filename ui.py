@@ -6,10 +6,9 @@ from data import (
     fetch_data_and_store,
     load_user_artists,
     load_user_tracks,
-    delete_user_data,
     needs_refresh,
 )
-from config import BACKEND_URL, cookie, supabase
+from config import BACKEND_URL, supabase
 
 TRACKS_CSS = """
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">

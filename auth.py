@@ -2,7 +2,6 @@ import spotipy
 import streamlit as st
 from config import supabase, BACKEND_URL, cookie, sp_oauth
 from datetime import datetime
-from ui import show_users
 import requests
 
 @st.dialog("Privacy Policy")
@@ -150,5 +149,3 @@ def show_login():
     st.caption("Login to see your top Spotify tracks.")
     if st.button("Login with Spotify", type="primary"):
         show_privacy_policy_modal()
-
-    show_users()
