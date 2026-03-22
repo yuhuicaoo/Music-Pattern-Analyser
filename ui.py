@@ -107,7 +107,6 @@ def show_users():
     if not users:
         return
     
-    st.divider()
     st.subheader("Current Users")
     
     users_html = """
