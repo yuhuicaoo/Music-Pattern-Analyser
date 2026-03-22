@@ -5,6 +5,7 @@ from datetime import datetime
 import requests
 
 from data import delete_user_data
+from ui import show_users
 
 @st.dialog("Privacy Policy")
 def show_privacy_policy_modal():
@@ -134,3 +135,5 @@ def show_login():
     st.caption("Login to see your top Spotify tracks.")
     if st.button("Login with Spotify", type="primary"):
         show_privacy_policy_modal()
+    
+    show_users()
