@@ -138,7 +138,7 @@ def show_users():
 
     for user in users:
         display_name = user['display_name']
-        profile_img = user['profile image']
+        profile_img = user['profile_img']
         placeholder_img = display_name[0].upper()
 
         if profile_img:
