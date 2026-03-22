@@ -5,6 +5,7 @@ from datetime import datetime
 from config import cookie
 from spotipy.oauth2 import SpotifyOAuth
 from ui import show_users
+import requests
 
 sp_oauth = SpotifyOAuth(
     client_id=st.secrets["spotify"]["SPOTIFY_CLIENT_ID"],
@@ -55,7 +56,7 @@ def get_spotify_client():
     if not key:
         return None
     
-    response = response.get(f"{BACKEND_URL}/token/{key}")
+    response = requests.get(f"{BACKEND_URL}/token/{key}")
     token_info = response.json()
     if "error" in token_info:
         return None
