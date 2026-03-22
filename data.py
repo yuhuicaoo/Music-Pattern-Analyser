@@ -22,7 +22,7 @@ def refresh_user_tracks(user_id, tracks):
         }
         for idx, track in enumerate(tracks)
     ]
-
+    print(rows[0])
     supabase.table("user_tracks").delete().eq("user_id", user_id).execute()
     supabase.table("user_tracks").insert(rows).execute()
 
