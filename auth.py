@@ -4,6 +4,8 @@ from config import supabase, BACKEND_URL, cookie, sp_oauth
 from datetime import datetime
 import requests
 
+from data import delete_user_data
+
 @st.dialog("Privacy Policy")
 def show_privacy_policy_modal():
     st.markdown(
@@ -140,7 +142,8 @@ def get_returning_user():
 
     return None, None
 
-def logout_user():
+def logout_user(user_id):
+    delete_user_data(user_id)
     cookie.remove("user_id")
     st.session_state.clear()
 

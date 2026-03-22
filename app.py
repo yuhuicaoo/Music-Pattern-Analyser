@@ -42,7 +42,7 @@ def main():
 
     st.title("Spotify Music Tracker")
     st.caption(f"Logged in as **{display_name}**")
-    show_disconnect_button()
+    show_disconnect_button(user_id)
 
     tab1, tab2, tab3 = st.tabs(["My Top Tracks", "My Top Artists", "Users"])
 
