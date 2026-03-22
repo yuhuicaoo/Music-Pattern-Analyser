@@ -89,7 +89,7 @@ def get_spotify_client_for_user(user_id):
         )
     except Exception:
         # profile not found, fall back to token in query params
-        return spotipy.Spotify(auth=st.query_params.get("token"))
+        return spotipy.Spotify(auth=st.session_state.get("access_token"))
 
     token_expiry = datetime.fromisoformat(profile["token_expiry"])
 
