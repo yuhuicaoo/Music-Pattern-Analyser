@@ -5,6 +5,7 @@ from streamlit_cookies_controller import CookieController
 
 BACKEND_URL = "https://music-pattern-analyser.onrender.com"
 
+SCOPE = "user-top-read user-read-private user-read-email"
 SUPABASE_URL = st.secrets["supabase"]["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["supabase"]["SUPABASE_KEY"]
 
