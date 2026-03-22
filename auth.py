@@ -47,38 +47,44 @@ def show_privacy_policy_modal():
     )
 
 
-def get_spotify_client():
+def get_spotify_client(user_id):
+    profile = (
+        supabase.table("user_profiles")
+        .select("access_token, refresh_token, token_expiry")
+        .eq("user_id", user_id)
+        .single()
+        .execute()
+        .data
+    )
 
-    if "token_info" in st.session_state:
-        return spotipy.Spotify(auth=st.session_state.token_info["access_token"])
+    token_expiry = datetime.fromisoformat(profile["token_expiry"])
 
-    key = st.query_params.get("session")
-    if not key:
-        return None
+    if datetime.now() > token_expiry:
+        token_info = sp_oauth.refresh_access_token(profile['refresh_token'])
+        new_expiry = datetime.fromtimestamp(token_info["expires_at"]).isoformat()
 
-    if isinstance(key, list):
-        key = key[0]
-
-    response = requests.get(f"{BACKEND_URL}/token/{key}")
-    token_info = response.json()
-    if "error" in token_info:
-        return None
-
-    st.session_state.token_info = token_info
-    return spotipy.Spotify(auth=token_info["access_token"])
+        supabase.table("user_profiles").update(
+            {
+                "access_token": token_info["access_token"],
+                "token_expiry": new_expiry,
+            }
+        ).eq("user_id", user_id).execute()
+        return spotipy.Spotify(auth=token_info["access_token"])
+    
+    return spotipy.Spotify(auth=profile["access_token"])
 
 
-def save_user_session(sp):
+def login_user(token_info):
+    sp = spotipy.Spotify(auth=token_info["access_token"])
     user = sp.me()
     user_id = user["id"]
     display_name = user["display_name"]
-    profile_img = user["images"][0]["url"]
+    profile_img = user["images"][0]["url"] if user.get("images") else None
 
     # convert unix timestamp to isoformat
-    token_info = st.session_state.token_info
     expires_at = datetime.fromtimestamp(token_info["expires_at"]).isoformat()
 
-    # insert user data into database
+    # store user data into database
     supabase.table("user_profiles").upsert(
         {
             "user_id": user_id,
@@ -95,34 +101,19 @@ def save_user_session(sp):
     st.session_state.user_id = user_id
     st.session_state.display_name = display_name
 
+    return user_id
 
-def get_spotify_client_for_user(user_id):
-    profile = (
-        supabase.table("user_profiles")
-        .select("access_token, refresh_token, token_expiry")
-        .eq("user_id", user_id)
-        .single()
-        .execute()
-        .data
-    )
 
-    token_expiry = datetime.fromisoformat(profile["token_expiry"])
-
-    if datetime.now() > token_expiry:
-        # token expired, need to refresh token
-        token_info = sp_oauth.refresh_access_token(profile["refresh_token"])
-
-        new_expiry = new_expiry = datetime.fromtimestamp(
-            token_info["expires_at"]
-        ).isoformat()
-
-        supabase.table("user_profiles").update(
-            {"access_token": token_info["access_token"], "token_expiry": new_expiry}
-        ).eq("user_id", user_id).execute()
-
-        return spotipy.Spotify(auth=token_info["access_token"])
-
-    return spotipy.Spotify(auth=profile["access_token"])
+def get_token_from_session():
+    key = st.query_params.get("session")
+    if not key:
+        return None
+    if isinstance(key, list):
+        key = key[0]
+    
+    response = requests.get(f"{BACKEND_URL}/token/{key}").json()
+    st.query_params.clear()
+    return None if "error" in response else response
 
 
 def get_returning_user():
@@ -150,6 +141,9 @@ def get_returning_user():
 
     return None, None
 
+def logout_user():
+    cookie.remove("user_id")
+    st.session_state.clear()
 
 def show_login():
     st.subheader("Welcome!")

@@ -2,11 +2,14 @@ import streamlit as st
 from auth import (
     get_spotify_client,
     get_returning_user,
+    get_token_from_session,
+    login_user,
     save_user_session,
     show_login,
     get_spotify_client_for_user,
 )
 
+from data import fetch_data_and_store
 from ui import (
     show_consent,
     show_disconnect_button,
@@ -22,42 +25,33 @@ def main():
             h1 { margin-bottom: 0rem; }
         </style>
     """, unsafe_allow_html=True)
-    st.title("Spotify Top Tracks & Artists Collector")
 
-    user_id, display_name = get_returning_user()
+    token_info = get_token_from_session()
+    if token_info:
+        user_id = login_user(token_info)
+        sp = get_spotify_client(user_id)
+        fetch_data_and_store(sp, user_id)
+        st.rerun()
 
-    if not user_id and "session" not in st.query_params:
-        show_login()
-        return
-
-    if not user_id:
-        sp = get_spotify_client()
-        if sp:
-            save_user_session(sp)
-            user_id, display_name = get_returning_user()
-        else:
-            show_login()
-            return
+    # check if already logged in
+    user_id = get_returning_user()
     
-    st.subheader(f"Hello {display_name}!")
+    if not user_id:
+        show_login()
 
-    st.session_state.setdefault("consent_given", False)
-    if not st.session_state.consent_given:
-        show_consent()
-        show_disconnect_button()
-        return
+    # logged in
+    st.title("Spotify Music Tracker")
+    st.caption(f"Logged in as **{st.session_state.display_name}**")
+    show_disconnect_button()
 
-    tab1, tab2, tab3 = st.tabs(["My Top Tracks", "My Top Artists", "Current Users"])
+    tab1, tab2, tab3 = st.tabs(["My Top Tracks, My Top Artists, Users"])
 
     with tab1:
-        sp = get_spotify_client_for_user(user_id)
-        show_my_tracks(sp, user_id)
+        show_my_tracks(user_id)
     with tab2:
         show_top_artists(user_id)
     with tab3:
         show_users()
-
-    show_disconnect_button()
 
 if __name__ == "__main__":
     main()

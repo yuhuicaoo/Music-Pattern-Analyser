@@ -2,7 +2,6 @@ import streamlit as st
 from supabase import create_client
 from streamlit_cookies_controller import CookieController
 from spotipy.oauth2 import SpotifyOAuth
-from spotipy.cache_handler import MemoryCacheHandler
 
 
 BACKEND_URL = "https://music-pattern-analyser.onrender.com"
@@ -18,6 +17,6 @@ sp_oauth = SpotifyOAuth(
     client_secret=st.secrets["spotify"]["SPOTIFY_CLIENT_SECRET"],
     redirect_uri=st.secrets["spotify"]["SPOTIFY_REDIRECT_URI"],
     scope="user-top-read user-read-private user-read-email",
-    cache_handler=MemoryCacheHandler(),
+    cache_handler=None,
     show_dialog=True
 )

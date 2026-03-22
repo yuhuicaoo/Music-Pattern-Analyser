@@ -3,14 +3,9 @@ from datetime import datetime
 from config import supabase
 
 
-def fetch_top_tracks(sp):
-    return sp.current_user_top_tracks(limit=50, time_range="short_term")["items"]
-
-def fetch_top_artists(sp):
-    return sp.current_user_top_artists(limit=5, time_range="short_term")["items"]
-
-def refresh_user_tracks(user_id, tracks):
-    rows = [
+def fetch_and_save_top_tracks(sp, user_id):
+    top_tracks =  sp.current_user_top_tracks(limit=50, time_range="short_term")["items"]
+    tracks = [
         {
             "user_id": user_id,
             "track_id": track["id"],
@@ -20,26 +15,33 @@ def refresh_user_tracks(user_id, tracks):
             "image_url": track["album"]["images"][0]["url"],
             "track_url": track["external_urls"]["spotify"]
         }
-        for idx, track in enumerate(tracks)
+        for idx, track in enumerate(top_tracks)
     ]
     supabase.table("user_tracks").delete().eq("user_id", user_id).execute()
-    supabase.table("user_tracks").insert(rows).execute()
+    supabase.table("user_tracks").insert(tracks).execute()
 
-def refresh_user_artists(user_id, artists):
-    rows = [
+def fetch_and_save_top_artists(sp, user_id):
+    top_artists = sp.current_user_top_artists(limit=5, time_range="short_term")["items"]
+    artists = [
         {
             "user_id": user_id,
-            "artist_id": artist["id"],
-            "artist_name": artist["name"],
+            "track_id": artist["id"],
+            "track_name": artist["name"],
+            "artist": artist["artists"][0]["name"],
             "rank": idx + 1,
-            "image_url": artist["images"][0]["url"],
-            "artist_url": artist["external_urls"]["spotify"]
+            "image_url": artist["album"]["images"][0]["url"],
+            "track_url": artist["external_urls"]["spotify"]
         }
-        for idx, artist in enumerate(artists)
+        for idx, artist in enumerate(top_artists)
     ]
+    supabase.table("user_tracks").delete().eq("user_id", user_id).execute()
+    supabase.table("user_tracks").insert(artists).execute()
 
-    supabase.table("user_artists").delete().eq("user_id", user_id).execute()
-    supabase.table("user_artists").insert(rows).execute()
+def fetch_data_and_store(sp, user_id):
+    if needs_refresh(user_id):
+        fetch_and_save_top_tracks(sp, user_id)
+        fetch_and_save_top_artists(sp, user_id)
+        update_last_fetched(user_id)
 
 def needs_refresh(user_id):
     profile = (
@@ -61,16 +63,6 @@ def update_last_fetched(user_id):
     supabase.table("user_profiles").update({
         "last_fetched": datetime.now().isoformat()
     }).eq("user_id", user_id).execute()
-
-def fetch_data_and_store(sp, user_id):
-    tracks = fetch_top_tracks(sp)
-    refresh_user_tracks(user_id, tracks)
-
-    artists = fetch_top_artists(sp)
-    refresh_user_artists(user_id, artists)
-
-    update_last_fetched(user_id)
-
 
 def load_user_tracks(user_id):
     return (

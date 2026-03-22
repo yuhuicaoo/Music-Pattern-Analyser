@@ -1,8 +1,15 @@
 import streamlit as st
 import streamlit.components.v1 as components
 from html import escape
-from data import fetch_data_and_store, load_user_artists, load_user_tracks, delete_user_data, needs_refresh
-from config import cookie, supabase
+from auth import logout_user
+from data import (
+    fetch_data_and_store,
+    load_user_artists,
+    load_user_tracks,
+    delete_user_data,
+    needs_refresh,
+)
+from config import BACKEND_URL, cookie, supabase
 
 TRACKS_CSS = """
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
@@ -51,6 +58,7 @@ def build_track_card(idx, row):
         </a>
     """
 
+
 def show_my_tracks(sp, user_id):
     existing_data = load_user_tracks(user_id)
 
@@ -61,6 +69,7 @@ def show_my_tracks(sp, user_id):
     fetch_data_and_store(sp, user_id)
     show_tracks(user_id)
 
+
 def show_tracks(user_id, tracks=None):
     if tracks is None:
         tracks = load_user_tracks(user_id)
@@ -69,47 +78,50 @@ def show_tracks(user_id, tracks=None):
     cards = "".join(build_track_card(idx, row) for idx, row in enumerate(tracks))
     components.html(f"{TRACKS_CSS}<div>{cards}</div>", height=400, scrolling=True)
 
-    st.markdown("""
+    st.markdown(
+        """
         <style>
             div[data-testid="stExpander"] {
                 margin-top: 4px;
                 margin-bottom: 0px
             }
         </style>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
+
 
 def show_disconnect_button():
-    with st.expander("Disconnect Spotify Account"):
-        st.warning(
-            "This will permanently delete all your data from our database, "
-            "including your top tracks history. This cannot be undone."
+    if st.button("Disconnect and Logout"):
+        logout_user()
+        st.rerun()
+
+def show_login_button():
+    st.title("🎵 Music Tracker")
+    st.caption("Login to see your top Spotify tracks alongside your friends.")
+    if st.button("Login with Spotify", type="primary"):
+        st.markdown(
+            f'<meta http-equiv="refresh" content="0; url={BACKEND_URL}/login">',
+            unsafe_allow_html=True,
         )
-        confirm = st.checkbox("I understand this will delete all my data")
-        if st.button("Delete my data and disconnect", type="primary"):
-            if confirm:
-                delete_user_data(st.session_state.user_id)
-                if cookie.get("user_id"):
-                    cookie.remove("user_id")
-                # clear session state
-                for key in list(st.session_state.keys()):
-                    del st.session_state[key]
-                st.query_params.clear()
-                st.rerun()
 
 def load_all_users():
     return (
         supabase.table("user_profiles")
         .select("display_name, profile_img")
-        .execute().data
+        .execute()
+        .data
     )
+    
+
 
 def show_users():
     users = load_all_users()
     if not users:
         return
-    
+
     st.subheader(f"Current Users: {len(users)}")
-    
+
     users_html = """
     <style>
         .users-container {
@@ -154,8 +166,8 @@ def show_users():
     """
 
     for user in users:
-        display_name = user['display_name']
-        profile_img = user['profile_img']
+        display_name = user["display_name"]
+        profile_img = user["profile_img"]
         placeholder_img = display_name[0].upper()
 
         if profile_img:
@@ -175,7 +187,9 @@ def show_users():
 
 
 def show_consent():
-    st.warning("Do you agree to giving access to your Spotify listening data and storing it in our database?")
+    st.warning(
+        "Do you agree to giving access to your Spotify listening data and storing it in our database?"
+    )
     col1, col2 = st.columns(2)
     with col1:
         if st.button("Yes, I consent", use_container_width=True):
@@ -185,6 +199,7 @@ def show_consent():
         if st.button("No, I do not give consent", use_container_width=True):
             st.info("Your data will not be accessed or stored")
             st.stop()
+
 
 def show_top_artists(user_id):
     artists = load_user_artists(user_id)

@@ -26,8 +26,7 @@ supabase = create_client(
 
 @app.get("/login")
 def login():
-    auth_url = sp_oauth.get_authorize_url()
-    return RedirectResponse(auth_url)
+    return RedirectResponse(url=sp_oauth.get_authorize_url())
 
 @app.get("/callback")
 async def callback(request: Request):
