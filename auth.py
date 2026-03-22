@@ -1,6 +1,6 @@
 import spotipy
 import streamlit as st
-from config import supabase, BACKEND_URL, SCOPE
+from config import supabase, BACKEND_URL
 from datetime import datetime
 from config import cookie
 from spotipy.oauth2 import SpotifyOAuth
@@ -10,7 +10,7 @@ sp_oauth = SpotifyOAuth(
     client_id=st.secrets["spotify"]["SPOTIFY_CLIENT_ID"],
     client_secret=st.secrets["spotify"]["SPOTIFY_CLIENT_SECRET"],
     redirect_uri=st.secrets["spotify"]["SPOTIFY_REDIRECT_URI"],
-    scope=SCOPE,
+    scope="user-top-read user-read-private user-read-email",
     cache_path=None,
     show_dialog=True
 )
