@@ -45,10 +45,9 @@ def update_last_fetched(user_id):
     }).eq("user_id", user_id).execute()
 
 def fetch_data_and_store(sp, user_id):
-    with st.spinner("Fetching your top tracks from Spotify..."):
-        tracks = fetch_top_tracks(sp)
-        refresh_user_tracks(user_id, tracks)
-        update_last_fetched(user_id)
+    tracks = fetch_top_tracks(sp)
+    refresh_user_tracks(user_id, tracks)
+    update_last_fetched(user_id)
 
 
 def load_user_tracks(user_id):

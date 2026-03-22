@@ -19,12 +19,6 @@ from ui import show_tracks, show_disconnect_button
 def main():
     st.title("Spotify Top Tracks Collector")
 
-    st.markdown("""
-        <style>
-            iframe[height="0"] { display: none; }
-        </style>
-    """, unsafe_allow_html=True)
-
     user_id, display_name = get_returning_user()
 
     if not user_id and "token" not in st.query_params:

@@ -15,7 +15,6 @@ sp_oauth = SpotifyOAuth(
 
 cookie = CookieController()
 
-
 @st.dialog("Privacy Policy")
 def show_privacy_policy_modal():
     st.markdown("""
