@@ -35,6 +35,7 @@ def main():
     
     if not user_id:
         show_login()
+        return
 
     # logged in
     st.title("Spotify Music Tracker")
