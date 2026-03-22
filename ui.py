@@ -216,8 +216,9 @@ def show_top_artists(user_id):
             object-fit: cover;
         }
         .artist-rank {
-            font-size: 12px;
+            font-size: 20px;
             color: white;
+            font-family: Inter, sans-serif;
             font-weight: bold;
         }
         .artist-name {
