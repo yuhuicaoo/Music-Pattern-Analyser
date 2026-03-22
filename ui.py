@@ -240,7 +240,7 @@ def show_top_artists(user_id):
         img = artist.get("image_url", "")
         name = artist["artist_name"]
         rank = artist["rank"]
-        artist_url = artist["artist_uri"]
+        artist_url = artist["artist_url"]
 
         artists_html += f"""
             <div class="artist-card">
