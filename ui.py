@@ -148,6 +148,7 @@ def show_users():
             color: white;
             text-align: center;
             font-family: Inter, sans-serif;
+            font-weight: bold
         }
     </style>
     <div class="users-container">
