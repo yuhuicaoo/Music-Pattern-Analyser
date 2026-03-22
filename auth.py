@@ -2,7 +2,7 @@ import spotipy
 import streamlit as st
 from config import supabase, BACKEND_URL
 from datetime import datetime
-from streamlit_cookies_controller import CookieController
+from config import cookie
 from spotipy.oauth2 import SpotifyOAuth
 from ui import show_users
 
@@ -13,8 +13,6 @@ sp_oauth = SpotifyOAuth(
     scope="user-top-read user-read-private user-read-email",
     cache_path=None
 )
-
-cookie = CookieController()
 
 @st.dialog("Privacy Policy")
 def show_privacy_policy_modal():
