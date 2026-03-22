@@ -1,7 +1,7 @@
 import streamlit as st
 import streamlit.components.v1 as components
 from html import escape
-from data import fetch_data_and_store, load_user_tracks, delete_user_data, needs_refresh
+from data import fetch_data_and_store, load_user_artists, load_user_tracks, delete_user_data, needs_refresh
 from config import cookie, supabase
 
 TRACKS_CSS = """
@@ -16,7 +16,7 @@ TRACKS_CSS = """
         display: flex;
         align-items: center;
         padding: 10px;
-        margin-bottom: 4px;
+        margin-bottom: 8px;
         background-color: #1a1a1a;
         border-radius: 10px;
         transition: background-color 0.2s;
@@ -28,6 +28,7 @@ TRACKS_CSS = """
     .track-artist { font-size: 13px; color: #aaa; }
 </style>
 """
+
 
 def build_track_card(idx, row):
     image_url = row["image_url"]
@@ -65,7 +66,7 @@ def show_tracks(user_id, tracks=None):
     if tracks is None:
         tracks = load_user_tracks(user_id)
 
-    st.subheader("Your Top 50 Tracks This Month")
+    st.subheader(f"Your Top {len(tracks)} Tracks This Month")
     cards = "".join(build_track_card(idx, row) for idx, row in enumerate(tracks))
     components.html(f"{TRACKS_CSS}<div>{cards}</div>", height=400, scrolling=True)
 
@@ -73,6 +74,7 @@ def show_tracks(user_id, tracks=None):
         <style>
             div[data-testid="stExpander"] {
                 margin-top: 4px;
+                margin-bottom: 0px
             }
         </style>
     """, unsafe_allow_html=True)
@@ -183,3 +185,72 @@ def show_consent():
         if st.button("No, I do not give consent", use_container_width=True):
             st.info("Your data will not be accessed or stored")
             st.stop()
+
+def show_top_artists(user_id):
+    artists = load_user_artists(user_id)
+    if not artists:
+        return
+
+    st.subheader(f"Your Top {len(artists)} Artists This Month")
+
+    artists_html = """
+    <style>
+        .artists-container {
+            display: flex;
+            flex-direction: row;
+            gap: 16px;
+            padding: 10px 0;
+        }
+        .artist-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            min-width: 100px;
+        }
+        .artist-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .artist-rank {
+            font-size: 11px;
+            color: #1DB954;
+            font-family: Inter, sans-serif;
+            font-weight: bold;
+        }
+        .artist-name {
+            font-size: 13px;
+            color: white;
+            text-align: center;
+            font-family: Inter, sans-serif;
+            font-weight: bold;
+        }
+        .artist-genres {
+            font-size: 11px;
+            color: #aaa;
+            text-align: center;
+            font-family: Inter, sans-serif;
+        }
+    </style>
+    <div class="artists-container">
+    """
+
+    for artist in artists:
+        img = artist.get("image_url", "")
+        name = artist["artist_name"]
+        rank = artist["rank"]
+        genres = ", ".join(artist.get("genres", [])[:2])  # show max 2 genres
+
+        artists_html += f"""
+            <div class="artist-card">
+                <div class="artist-rank">#{rank}</div>
+                <img class="artist-image" src="{img}" />
+                <div class="artist-name">{name}</div>
+                <div class="artist-genres">{genres}</div>
+            </div>
+        """
+
+    artists_html += "</div>"
+    components.html(artists_html, height=200)
