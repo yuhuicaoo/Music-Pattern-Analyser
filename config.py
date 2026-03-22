@@ -1,7 +1,7 @@
 import streamlit as st
 from supabase import create_client
 
-BACKEND_URL = "https://music-pattern-analyser.onrender.com"
+BACKEND_URL = st.secrets["app"]["BACKEND_URL"]
 
 SUPABASE_URL = st.secrets["supabase"]["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["supabase"]["SUPABASE_KEY"]

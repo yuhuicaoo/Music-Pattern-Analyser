@@ -17,6 +17,11 @@ from ui import show_tracks, show_disconnect_button
 
 
 def main():
+    st.markdown("""
+        <style>
+            h1 { margin-bottom: 0rem; }
+        </style>
+    """, unsafe_allow_html=True)
     st.title("Spotify Top Tracks Collector")
 
     user_id, display_name = get_returning_user()

@@ -9,7 +9,7 @@ sp_oauth = SpotifyOAuth(
     client_id=st.secrets["spotify"]["SPOTIFY_CLIENT_ID"],
     client_secret=st.secrets["spotify"]["SPOTIFY_CLIENT_SECRET"],
     redirect_uri=st.secrets["spotify"]["SPOTIFY_REDIRECT_URI"],
-    scope="user-top-read",
+    scope="user-top-read user-read-private user-read-email",
     cache_path=None
 )
 
@@ -58,6 +58,7 @@ def save_user_session(sp):
     user = sp.me()
     user_id = user['id']
     display_name = user['display_name']
+    profile_img = user['images'][0]['url']
 
     # convert unix timestamp to isoformat
     expires_at = datetime.fromtimestamp(
@@ -70,7 +71,8 @@ def save_user_session(sp):
         "display_name": display_name,
         "access_token": st.query_params["token"],
         "refresh_token": st.query_params["refresh"],
-        "token_expiry": expires_at
+        "token_expiry": expires_at,
+        "profile_img": profile_img
     }, on_conflict="user_id").execute()
 
     cookie.set("user_id", user_id)

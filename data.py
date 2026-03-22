@@ -7,7 +7,6 @@ def fetch_top_tracks(sp):
     return sp.current_user_top_tracks(limit=50, time_range="short_term")["items"]
 
 def refresh_user_tracks(user_id, tracks):
-    month_year = datetime.now().strftime("%m-%Y")
     rows = [
         {
             "user_id": user_id,
