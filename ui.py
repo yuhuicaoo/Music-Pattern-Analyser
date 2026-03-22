@@ -45,7 +45,7 @@ def build_track_card(idx, row):
         </div>
     """
 
-def show_tracks(user_id, display_name, tracks=None):
+def show_tracks(user_id, tracks=None):
     if tracks is None:
         tracks = load_user_tracks(user_id)
 
