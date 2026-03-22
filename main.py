@@ -3,10 +3,26 @@ from fastapi import FastAPI, Request
 from spotipy.oauth2 import SpotifyOAuth
 from fastapi.responses import RedirectResponse
 import secrets
-from config import supabase, sp_oauth
+from supabase import create_client
 import requests as req
 
 app = FastAPI()
+
+# Initialize Spotify OAuth with environment variables
+sp_oauth = SpotifyOAuth(
+    client_id=os.getenv("SPOTIFY_CLIENT_ID"),
+    client_secret=os.getenv("SPOTIFY_CLIENT_SECRET"),
+    redirect_uri=os.getenv("SPOTIFY_REDIRECT_URI"),
+    scope="user-top-read user-read-private user-read-email",
+    cache_handler=None,
+    show_dialog=True
+)
+
+# Initialize Supabase with environment variables
+supabase = create_client(
+    supabase_url=os.getenv("SUPABASE_URL"),
+    supabase_key=os.getenv("SUPABASE_KEY")
+)
 
 @app.get("/login")
 def login():

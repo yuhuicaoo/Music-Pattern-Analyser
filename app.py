@@ -32,8 +32,12 @@ def main():
 
     if not user_id:
         sp = get_spotify_client()
-        save_user_session(sp)
-        user_id, display_name = get_returning_user()
+        if sp:
+            save_user_session(sp)
+            user_id, display_name = get_returning_user()
+        else:
+            show_login()
+            return
     
     st.subheader(f"Hello {display_name}!")
 
