@@ -217,7 +217,7 @@ def show_top_artists(user_id):
             transition: opacity 0.2s;
         }
         .artist-image:hover {
-            opacity: 0.8;
+            opacity: 0.8;  /* 👈 dims on hover */
         }
         .artist-rank {
             font-size: 20px;
@@ -240,16 +240,16 @@ def show_top_artists(user_id):
         img = artist.get("image_url", "")
         name = artist["artist_name"]
         rank = artist["rank"]
-        artist_url = artist["artist_url"]
+        artist_url = artist["artist_uri"]
 
         artists_html += f"""
-            <a href="{artist_url}" target="_blank" style="text-decoration: none;">
-                <div class="artist-card">
-                    <div class="artist-rank">#{rank}</div>
+            <div class="artist-card">
+                <div class="artist-rank">#{rank}</div>
+                <a href="{artist_url}" target="_blank">
                     <img class="artist-image" src="{img}" />
-                    <div class="artist-name">{name}</div>
-                </div>
-            </a>
+                </a>
+                <div class="artist-name">{name}</div>
+            </div>
         """
 
     artists_html += "</div>"
