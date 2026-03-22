@@ -90,9 +90,9 @@ def show_tracks(user_id, tracks=None):
     )
 
 
-def show_disconnect_button():
+def show_disconnect_button(user_id):
     if st.button("Disconnect and Logout"):
-        logout_user()
+        logout_user(user_id)
         st.rerun()
 
 def show_login_button():
