@@ -73,7 +73,7 @@ def show_tracks(user_id, tracks=None):
         <style>
             div[data-testid="stExpander"] {
                 margin-top: 4px;
-                margin-bottom: 4px
+                margin-bottom: 0px
             }
         </style>
     """, unsafe_allow_html=True)
