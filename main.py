@@ -4,11 +4,6 @@ from spotipy.oauth2 import SpotifyOAuth
 from fastapi.responses import RedirectResponse
 import secrets
 from supabase import create_client
-import logging
-import sys
-
-
-logging.basicConfig(level=logging.INFO, handlers=[logging.StreamHandler(sys.stdout)])
 
 app = FastAPI()
 
@@ -58,4 +53,11 @@ def get_token(key):
         .execute()    
     )
 
-    logging.info(f"Result: {result.data}")
+    if not result.data:
+        return {"error": "Invalid or expired session"}
+
+    token = result.data["token"]
+
+    supabase.table("spotify_sessions").delete().eq("key",key).execute()
+
+    return token
