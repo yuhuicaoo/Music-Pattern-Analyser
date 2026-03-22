@@ -41,7 +41,7 @@ def main():
     st.caption(f"Logged in as **{st.session_state.display_name}**")
     show_disconnect_button()
 
-    tab1, tab2, tab3 = st.tabs(["My Top Tracks, My Top Artists, Users"])
+    tab1, tab2, tab3 = st.tabs(["My Top Tracks", "My Top Artists", "Users"])
 
     with tab1:
         show_my_tracks(user_id)
