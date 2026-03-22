@@ -2,8 +2,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 from html import escape
 from data import load_user_tracks, delete_user_data
-from config import cookie
-import supabase
+from config import cookie, supabase
 
 TRACKS_CSS = """
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
