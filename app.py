@@ -14,10 +14,9 @@ from data import (
 )
 
 from ui import (
-    show_my_tracks,
-    show_tracks, 
     show_disconnect_button, 
-    show_users
+    show_users,
+    show_my_tracks
 )
 
 
