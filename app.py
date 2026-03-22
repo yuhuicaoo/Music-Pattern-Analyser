@@ -13,7 +13,7 @@ from data import (
     load_user_tracks
 )
 
-from ui import show_tracks, show_disconnect_button
+from ui import show_tracks, show_disconnect_button, show_users
 
 
 def main():
@@ -27,7 +27,11 @@ def main():
     user_id, display_name = get_returning_user()
 
     if not user_id and "token" not in st.query_params:
-        show_login()
+        tab1, tab2 = st.tabs(["Login", "Users"])
+        with tab1:
+            show_login()
+        with tab2:
+            show_users()
         return
 
     if not user_id:
