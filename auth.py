@@ -109,8 +109,6 @@ def get_token_from_session():
     key = st.query_params.get("session")
     if not key:
         return None
-    if isinstance(key, list):
-        key = key[0]
     
     response = requests.get(f"{BACKEND_URL}/token/{key}").json()
     st.query_params.clear()
