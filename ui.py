@@ -20,6 +20,8 @@ TRACKS_CSS = """
         background-color: #1a1a1a;
         border-radius: 10px;
         transition: background-color 0.2s;
+        cursor: pointer;
+
     }
     .track-card:hover { background-color: #2a2a2a; }
     .track-number { font-size: 14px; color: #888; width: 30px; text-align: center; }
@@ -34,16 +36,19 @@ def build_track_card(idx, row):
     image_url = row["image_url"]
     track_name = escape(row["track_name"])
     artist = escape(row["artist"])
+    track_url = row["track_url"]
 
     return f"""
-        <div class="track-card">
-            <span class="track-number">{idx + 1}</span>
-            <img class="track-image" src="{image_url}" />
-            <div>
-                <div class="track-name">{track_name}</div>
-                <div class="track-artist">{artist}</div>
+        <a href="{track_url}" target="_blank" style="text-decoration: none;">
+            <div class="track-card">
+                <span class="track-number">{idx + 1}</span>
+                <img class="track-image" src="{image_url}" />
+                <div>
+                    <div class="track-name">{track_name}</div>
+                    <div class="track-artist">{artist}</div>
+                </div>
             </div>
-        </div>
+        </a>
     """
 
 def show_my_tracks(sp, user_id):
@@ -209,6 +214,10 @@ def show_top_artists(user_id):
             height: 100px;
             border-radius: 50%;
             object-fit: cover;
+            transition: opacity 0.2s;
+        }
+        .artist-image:hover {
+            opacity: 0.8;
         }
         .artist-rank {
             font-size: 20px;
@@ -231,13 +240,16 @@ def show_top_artists(user_id):
         img = artist.get("image_url", "")
         name = artist["artist_name"]
         rank = artist["rank"]
+        artist_url = artist["artist_uri"]
 
         artists_html += f"""
-            <div class="artist-card">
-                <div class="artist-rank">#{rank}</div>
-                <img class="artist-image" src="{img}" />
-                <div class="artist-name">{name}</div>
-            </div>
+            <a href="{artist_url}" target="_blank" style="text-decoration: none;">
+                <div class="artist-card">
+                    <div class="artist-rank">#{rank}</div>
+                    <img class="artist-image" src="{img}" />
+                    <div class="artist-name">{name}</div>
+                </div>
+            </a>
         """
 
     artists_html += "</div>"

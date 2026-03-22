@@ -17,7 +17,8 @@ def refresh_user_tracks(user_id, tracks):
             "track_name": track["name"],
             "artist": track["artists"][0]["name"],
             "rank": idx + 1,
-            "image_url": track["album"]["images"][0]["url"]
+            "image_url": track["album"]["images"][0]["url"],
+            "track_url": track["external_urls"]["spotify"]
         }
         for idx, track in enumerate(tracks)
     ]
@@ -33,6 +34,7 @@ def refresh_user_artists(user_id, artists):
             "artist_name": artist["name"],
             "rank": idx + 1,
             "image_url": artist["images"][0]["url"],
+            "artist_url": artist["external_urls"]["spotify"]
         }
         for idx, artist in enumerate(artists)
     ]
