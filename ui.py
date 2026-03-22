@@ -1,7 +1,8 @@
 import streamlit as st
 import streamlit.components.v1 as components
 from html import escape
-from data import load_user_tracks, delete_user_data
+from auth import show_consent
+from data import fetch_data_and_store, load_user_tracks, delete_user_data, needs_refresh
 from config import cookie, supabase
 
 TRACKS_CSS = """
@@ -44,6 +45,22 @@ def build_track_card(idx, row):
             </div>
         </div>
     """
+
+def show_my_tracks(sp, user_id):
+    existing_data = load_user_tracks(user_id)
+
+    if existing_data and not needs_refresh(user_id):
+        show_tracks(user_id, existing_data)
+        return
+    
+    # if new user (no existing data)
+    st.session_state.setdefault("consent_given", False)
+    if not st.session_state.consent_given:
+        show_consent()
+        return
+
+    fetch_data_and_store(sp, user_id)
+    show_tracks(user_id)
 
 def show_tracks(user_id, tracks=None):
     if tracks is None:

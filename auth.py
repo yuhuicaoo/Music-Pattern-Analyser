@@ -136,6 +136,8 @@ def show_login():
     st.caption("Login to see your top Spotify tracks.")
     if st.button("Login with Spotify", type="primary"):
         show_privacy_policy_modal()
+    
+    show_users()
 
 def show_consent():
     st.warning("Do you agree to giving access to your Spotify listening data and storing it in our database?")
