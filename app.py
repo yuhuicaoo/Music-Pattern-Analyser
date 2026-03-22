@@ -4,13 +4,7 @@ from auth import (
     get_returning_user,
     save_user_session,
     show_login,
-    show_consent,
     get_spotify_client_for_user,
-)
-from data import (
-    fetch_data_and_store, 
-    needs_refresh, 
-    load_user_tracks
 )
 
 from ui import (
