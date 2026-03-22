@@ -37,7 +37,7 @@ def show_privacy_policy_modal():
     """)
     # login button lives inside the modal
     st.markdown(f'''
-        <a href="{BACKEND_URL}/login" target="_self" style="
+        <a href="{BACKEND_URL}/login" target="_top" style="
             display: inline-block;
             background-color: #1DB954;
             width: 100%;
