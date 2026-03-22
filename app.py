@@ -33,10 +33,7 @@ def main():
     if not user_id:
         sp = get_spotify_client()
         save_user_session(sp)
-        st.session_state.access_token = st.query_params["token"]
         user_id, display_name = get_returning_user()
-        st.query_params.clear()
-        st.rerun
     
     st.subheader(f"Hello {display_name}!")
 

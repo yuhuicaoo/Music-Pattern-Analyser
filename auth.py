@@ -79,17 +79,13 @@ def save_user_session(sp):
     st.session_state.display_name = display_name
 
 def get_spotify_client_for_user(user_id):
-    try:
-        profile = (
-            supabase.table("user_profiles")
-            .select("access_token, refresh_token, token_expiry")
-            .eq("user_id", user_id)
-            .single()
-            .execute().data
-        )
-    except Exception:
-        # profile not found, fall back to token in query params
-        return spotipy.Spotify(auth=st.session_state.get("access_token"))
+    profile = (
+        supabase.table("user_profiles")
+        .select("access_token, refresh_token, token_expiry")
+        .eq("user_id", user_id)
+        .single()
+        .execute().data
+    )
 
     token_expiry = datetime.fromisoformat(profile["token_expiry"])
 
