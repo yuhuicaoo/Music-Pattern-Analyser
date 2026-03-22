@@ -3,6 +3,7 @@ import streamlit.components.v1 as components
 from html import escape
 from data import load_user_tracks, delete_user_data
 from auth import cookie
+import time
 
 TRACKS_CSS = """
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
@@ -50,6 +51,7 @@ def show_tracks(user_id, tracks=None):
     if tracks is None:
         with st.spinner("Loading your top 50 songs..."):
             tracks = load_user_tracks(user_id)
+            time.sleep(0.5)
 
 
     cards = "".join(build_track_card(idx, row) for idx, row in enumerate(tracks))
