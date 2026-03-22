@@ -3,7 +3,6 @@ import streamlit.components.v1 as components
 from html import escape
 from data import load_user_tracks, delete_user_data
 from auth import cookie
-import time
 
 TRACKS_CSS = """
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
@@ -46,7 +45,7 @@ def build_track_card(idx, row):
         </div>
     """
 
-def show_tracks(user_id, display_name tracks=None):
+def show_tracks(user_id, display_name, tracks=None):
     if tracks is None:
         tracks = load_user_tracks(user_id)
 
