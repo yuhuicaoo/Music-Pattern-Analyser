@@ -211,8 +211,8 @@ def show_top_artists(user_id):
             flex: 1;
         }
         .artist-image {
-            width: 80px;
-            height: 80px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
             object-fit: cover;
         }
