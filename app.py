@@ -30,7 +30,9 @@ def main():
         save_user_session(sp)
         user_id, display_name = get_returning_user()
 
-    st.subheader(f"Hello {display_name}!")
+    if not st.session_state.get("greeted"):
+        st.subheader(f"Hello {display_name}!")
+        st.session_state.greeted = True
 
     sp = get_spotify_client_for_user(user_id)
 
