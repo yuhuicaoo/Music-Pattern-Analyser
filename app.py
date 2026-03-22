@@ -8,6 +8,7 @@ from auth import (
 )
 
 from ui import (
+    show_consent,
     show_disconnect_button,
     show_top_artists, 
     show_users,
@@ -35,6 +36,12 @@ def main():
         user_id, display_name = get_returning_user()
     
     st.subheader(f"Hello {display_name}!")
+
+    st.session_state.setdefault("consent_given", False)
+    if not st.session_state.consent_given:
+        show_consent()
+        show_disconnect_button()
+        return
 
     tab1, tab2, tab3 = st.tabs(["My Top Tracks", "My Top Artists", "Current Users"])
 

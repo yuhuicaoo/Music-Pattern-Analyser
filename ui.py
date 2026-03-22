@@ -52,12 +52,6 @@ def show_my_tracks(sp, user_id):
     if existing_data and not needs_refresh(user_id):
         show_tracks(user_id, existing_data)
         return
-    
-    # if new user (no existing data)
-    st.session_state.setdefault("consent_given", False)
-    if not st.session_state.consent_given:
-        show_consent()
-        return
 
     fetch_data_and_store(sp, user_id)
     show_tracks(user_id)
