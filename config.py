@@ -18,5 +18,6 @@ sp_oauth = SpotifyOAuth(
     client_secret=st.secrets["spotify"]["SPOTIFY_CLIENT_SECRET"],
     redirect_uri=st.secrets["spotify"]["SPOTIFY_REDIRECT_URI"],
     scope="user-top-read user-read-private user-read-email",
-    cache_handler=MemoryCacheHandler()
+    cache_handler=MemoryCacheHandler(),
+    show_dialog=True
 )
