@@ -1,5 +1,4 @@
 import streamlit as st
-from supabase import create_client
 from streamlit_cookies_controller import CookieController
 from spotipy.oauth2 import SpotifyOAuth
 
