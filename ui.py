@@ -47,13 +47,13 @@ def build_track_card(idx, row):
     """
 
 def show_tracks(user_id, tracks=None):
-    st.subheader("Your Top 50 Tracks This Month")
     if tracks is None:
         with st.spinner("Loading your top 50 songs..."):
             tracks = load_user_tracks(user_id)
             time.sleep(0.5)
 
 
+    st.subheader("Your Top 50 Tracks This Month")
     cards = "".join(build_track_card(idx, row) for idx, row in enumerate(tracks))
     components.html(f"{TRACKS_CSS}<div>{cards}</div>", height=480, scrolling=True)
 
