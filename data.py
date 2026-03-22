@@ -33,8 +33,8 @@ def fetch_and_save_top_artists(sp, user_id):
         }
         for idx, artist in enumerate(top_artists)
     ]
-    supabase.table("user_tracks").delete().eq("user_id", user_id).execute()
-    supabase.table("user_tracks").insert(artists).execute()
+    supabase.table("user_artists").delete().eq("user_id", user_id).execute()
+    supabase.table("user_artists").insert(artists).execute()
 
 def fetch_data_and_store(sp, user_id):
     if needs_refresh(user_id):
