@@ -38,6 +38,8 @@ def main():
         return
 
     # logged in
+    sp = get_spotify_client(user_id)  # 👈 get sp once here
+
     st.title("Spotify Music Tracker")
     st.caption(f"Logged in as **{display_name}**")
     show_disconnect_button()
