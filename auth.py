@@ -12,7 +12,6 @@ sp_oauth = SpotifyOAuth(
     redirect_uri=st.secrets["spotify"]["SPOTIFY_REDIRECT_URI"],
     scope="user-top-read user-read-private user-read-email",
     cache_path=None,
-    show_dialog=True
 )
 
 @st.dialog("Privacy Policy")
