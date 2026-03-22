@@ -72,7 +72,7 @@ def show_tracks(user_id, tracks=None):
     st.markdown("""
         <style>
             div[data-testid="stExpander"] {
-                margin-top: 12px;
+                margin-top: 8px;
             }
         </style>
     """, unsafe_allow_html=True)
@@ -107,7 +107,7 @@ def show_users():
     if not users:
         return
     
-    st.subheader("Current Users")
+    st.subheader(f"Current Users: {len(users)}")
     
     users_html = """
     <style>
