@@ -5,7 +5,6 @@ from spotipy.oauth2 import SpotifyOAuth
 
 
 BACKEND_URL = "https://music-pattern-analyser.onrender.com"
-FRONTEND_URL = "https://music-pattern-analyser.streamlit.app"
 
 
 SUPABASE_URL = st.secrets["supabase"]["SUPABASE_URL"]

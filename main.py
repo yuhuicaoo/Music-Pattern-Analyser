@@ -1,7 +1,6 @@
 import os
 import secrets
 from datetime import datetime
-from config import FRONTEND_URL
 
 import spotipy
 from fastapi import FastAPI, Request
@@ -10,6 +9,9 @@ from spotipy.oauth2 import SpotifyOAuth
 from supabase import create_client
 
 app = FastAPI()
+
+FRONTEND_URL = "https://music-pattern-analyser.streamlit.app"
+
 
 # Initialize Supabase with environment variables
 supabase = create_client(
