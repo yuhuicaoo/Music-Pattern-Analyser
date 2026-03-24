@@ -19,6 +19,8 @@ supabase = create_client(
     supabase_key=os.getenv("SUPABASE_KEY")
 )
 
+
+
 # Initialize Spotify OAuth with environment variables
 sp_oauth = SpotifyOAuth(
     client_id=os.getenv("SPOTIFY_CLIENT_ID"),
@@ -40,7 +42,7 @@ async def callback(request: Request):
     if not code:
         return {"error": "Missing Spotify code"}
 
-    token_info = sp_oauth.get_access_token(code)
+    token_info = sp_oauth.get_access_token(code, check_cache=False)
 
     sp = spotipy.Spotify(auth=token_info["access_token"])
     user = sp.current_user()
