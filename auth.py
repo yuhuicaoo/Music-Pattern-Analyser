@@ -30,11 +30,23 @@ def show_privacy_policy_modal():
     any third party.
     """
     )
-    if st.button("I agree, Login with Spotify", type="primary", use_container_width=True):
-        st.markdown(
-            f'<meta http-equiv="refresh" content="0; url={BACKEND_URL}/login">',
-            unsafe_allow_html=True,
-        )
+    # login button lives inside the modal
+    st.markdown(
+        f"""
+        <a href="{BACKEND_URL}/login" target="_blank" style="
+            display: inline-block;
+            background-color: #1DB954;
+            width: 100%;
+            color: white;
+            padding: 8px 24px;
+            border-radius: 16px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+        ">I agree, Login with Spotify</a>
+    """,
+        unsafe_allow_html=True,
+    )
 
 
 def get_spotify_client(user_id):
