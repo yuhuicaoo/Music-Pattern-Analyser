@@ -1,22 +1,15 @@
 import os
-from fastapi import FastAPI, Request
-from spotipy.oauth2 import SpotifyOAuth
-from fastapi.responses import RedirectResponse
-from supabase import create_client
 import secrets
+from datetime import datetime
+from config import FRONTEND_URL
+
 import spotipy
+from fastapi import FastAPI, Request
+from fastapi.responses import RedirectResponse
+from spotipy.oauth2 import SpotifyOAuth
+from supabase import create_client
 
 app = FastAPI()
-
-# Initialize Spotify OAuth with environment variables
-sp_oauth = SpotifyOAuth(
-    client_id=os.getenv("SPOTIFY_CLIENT_ID"),
-    client_secret=os.getenv("SPOTIFY_CLIENT_SECRET"),
-    redirect_uri=os.getenv("SPOTIFY_REDIRECT_URI"),
-    scope="user-top-read user-read-private user-read-email",
-    cache_path=None,
-    show_dialog=True
-)
 
 # Initialize Supabase with environment variables
 supabase = create_client(
@@ -24,38 +17,15 @@ supabase = create_client(
     supabase_key=os.getenv("SUPABASE_KEY")
 )
 
-@app.get("/login")
-def login():
-    return RedirectResponse(url=sp_oauth.get_authorize_url())
-
-import os
-import secrets
-import spotipy
-from datetime import datetime
-
-from fastapi import FastAPI, Request
-from fastapi.responses import RedirectResponse
-from spotipy.oauth2 import SpotifyOAuth
-from supabase import create_client
-
-app = FastAPI()
-
+# Initialize Spotify OAuth with environment variables
 sp_oauth = SpotifyOAuth(
     client_id=os.getenv("SPOTIFY_CLIENT_ID"),
     client_secret=os.getenv("SPOTIFY_CLIENT_SECRET"),
     redirect_uri=os.getenv("SPOTIFY_REDIRECT_URI"),
     scope="user-top-read user-read-private user-read-email",
-    cache_path=None,
+    cache_handler=spotipy.cache_handler.MemoryCacheHandler(),
     show_dialog=True
 )
-
-supabase = create_client(
-    os.getenv("SUPABASE_URL"),
-    os.getenv("SUPABASE_KEY")
-)
-
-FRONTEND_URL = "https://music-pattern-analyser.streamlit.app"
-
 
 @app.get("/login")
 def login():
@@ -75,8 +45,6 @@ async def callback(request: Request):
 
     user_id = user["id"]
     display_name = user.get("display_name")
-    if user_id:
-        return {"user_id": user_id, "display_name":display_name}
     profile_img = user["images"][0]["url"] if user.get("images") else None
     expires_at = datetime.fromtimestamp(token_info["expires_at"]).isoformat()
 
