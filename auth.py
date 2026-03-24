@@ -29,24 +29,15 @@ def show_privacy_policy_modal():
     Your data is stored in Supabase. It is never sold or shared with 
     any third party.
     """
-    )
-    # login button lives inside the modal
-    st.markdown(
-        f"""
-        <a href="{BACKEND_URL}/login" style="
-            display: inline-block;
-            background-color: #1DB954;
-            width: 100%;
-            color: white;
-            padding: 8px 24px;
-            border-radius: 16px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 16px;
-        ">I agree, Login with Spotify</a>
-    """,
-        unsafe_allow_html=True,
-    )
+    if st.button("I agree, Login with Spotify", type="primary", use_container_width=True):
+        st.markdown(
+            f"""
+            <script>
+                window.parent.location.href = "{BACKEND_URL}/login";
+            </script>
+            """,
+            unsafe_allow_html=True,
+        )
 
 
 def get_spotify_client(user_id):
