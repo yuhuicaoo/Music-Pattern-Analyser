@@ -29,13 +29,10 @@ def show_privacy_policy_modal():
     Your data is stored in Supabase. It is never sold or shared with 
     any third party.
     """
+    )
     if st.button("I agree, Login with Spotify", type="primary", use_container_width=True):
         st.markdown(
-            f"""
-            <script>
-                window.parent.location.href = "{BACKEND_URL}/login";
-            </script>
-            """,
+            f'<meta http-equiv="refresh" content="0; url={BACKEND_URL}/login">',
             unsafe_allow_html=True,
         )
 
