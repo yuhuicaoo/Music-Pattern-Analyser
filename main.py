@@ -15,29 +15,30 @@ FRONTEND_URL = "https://music-pattern-analyser.streamlit.app"
 
 # Initialize Supabase with environment variables
 supabase = create_client(
-    supabase_url=os.getenv("SUPABASE_URL"),
-    supabase_key=os.getenv("SUPABASE_KEY")
+    supabase_url=os.getenv("SUPABASE_URL"), supabase_key=os.getenv("SUPABASE_KEY")
 )
 
 
+def make_sp_oauth():
+    return SpotifyOAuth(
+        client_id=os.getenv("SPOTIFY_CLIENT_ID"),
+        client_secret=os.getenv("SPOTIFY_CLIENT_SECRET"),
+        redirect_uri=os.getenv("SPOTIFY_REDIRECT_URI"),
+        scope="user-top-read user-read-private user-read-email",
+        show_dialog=True,
+        cache_path=None,
+    )
 
-# Initialize Spotify OAuth with environment variables
-sp_oauth = SpotifyOAuth(
-    client_id=os.getenv("SPOTIFY_CLIENT_ID"),
-    client_secret=os.getenv("SPOTIFY_CLIENT_SECRET"),
-    redirect_uri=os.getenv("SPOTIFY_REDIRECT_URI"),
-    scope="user-top-read user-read-private user-read-email",
-    show_dialog=True,
-    cache_path=None
-)
 
 @app.get("/login")
 def login():
+    sp_oauth = make_sp_oauth()
     return RedirectResponse(url=sp_oauth.get_authorize_url())
 
 
 @app.get("/callback")
 async def callback(request: Request):
+    sp_oauth = make_sp_oauth()
     code = request.query_params.get("code")
     if not code:
         return {"error": "Missing Spotify code"}
@@ -67,13 +68,12 @@ async def callback(request: Request):
 
     # 2) now insert child row
     key = secrets.token_urlsafe(32)
-    supabase.table("spotify_sessions").insert({
-        "key": key,
-        "user_id": user_id,
-        "token": token_info
-    }).execute()
+    supabase.table("spotify_sessions").insert(
+        {"key": key, "user_id": user_id, "token": token_info}
+    ).execute()
 
     return RedirectResponse(url=f"{FRONTEND_URL}/?session={key}")
+
 
 @app.get("/token/{key}")
 def get_token(key):
@@ -90,9 +90,6 @@ def get_token(key):
 
     data = result.data
 
-    supabase.table("spotify_sessions").delete().eq("key",key).execute()
+    supabase.table("spotify_sessions").delete().eq("key", key).execute()
 
-    return {
-        "token_info": data["token"],
-        "user_id": data["user_id"]
-    }
+    return {"token_info": data["token"], "user_id": data["user_id"]}

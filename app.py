@@ -19,7 +19,7 @@ from ui import (
 def main():
     st.markdown("""
         <style>
-            h1 { margin-bottom: 0rem; }
+            h1 { margin-bottom: 0rem;}
         </style>
     """, unsafe_allow_html=True)
 

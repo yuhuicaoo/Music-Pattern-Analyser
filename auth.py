@@ -1,6 +1,6 @@
 import spotipy
 import streamlit as st
-from config import supabase, BACKEND_URL, sp_oauth
+from config import supabase, BACKEND_URL, make_sp_oauth
 from datetime import datetime
 import requests
 
@@ -62,7 +62,7 @@ def get_spotify_client(user_id):
     token_expiry = datetime.fromisoformat(profile["token_expiry"])
 
     if datetime.now() > token_expiry:
-        token_info = sp_oauth.refresh_access_token(profile["refresh_token"])
+        token_info = make_sp_oauth.refresh_access_token(profile["refresh_token"])
         new_expiry = datetime.fromtimestamp(token_info["expires_at"]).isoformat()
 
         supabase.table("user_profiles").update(
