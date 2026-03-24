@@ -28,27 +28,78 @@ supabase = create_client(
 def login():
     return RedirectResponse(url=sp_oauth.get_authorize_url())
 
+import os
+import secrets
+import spotipy
+from datetime import datetime
+
+from fastapi import FastAPI, Request
+from fastapi.responses import RedirectResponse
+from spotipy.oauth2 import SpotifyOAuth
+from supabase import create_client
+
+app = FastAPI()
+
+sp_oauth = SpotifyOAuth(
+    client_id=os.getenv("SPOTIFY_CLIENT_ID"),
+    client_secret=os.getenv("SPOTIFY_CLIENT_SECRET"),
+    redirect_uri=os.getenv("SPOTIFY_REDIRECT_URI"),
+    scope="user-top-read user-read-private user-read-email",
+    cache_path=None,
+    show_dialog=True
+)
+
+supabase = create_client(
+    os.getenv("SUPABASE_URL"),
+    os.getenv("SUPABASE_KEY")
+)
+
+FRONTEND_URL = "https://music-pattern-analyser.streamlit.app"
+
+
+@app.get("/login")
+def login():
+    return RedirectResponse(url=sp_oauth.get_authorize_url())
+
+
 @app.get("/callback")
 async def callback(request: Request):
     code = request.query_params.get("code")
+    if not code:
+        return {"error": "Missing Spotify code"}
 
     token_info = sp_oauth.get_access_token(code)
 
-    sp = spotipy.SpotifyOAuth(auth=token_info["access_token"])
-    user = sp.me()
+    sp = spotipy.Spotify(auth=token_info["access_token"])
+    user = sp.current_user()
+
     user_id = user["id"]
+    display_name = user.get("display_name")
+    profile_img = user["images"][0]["url"] if user.get("images") else None
+    expires_at = datetime.fromtimestamp(token_info["expires_at"]).isoformat()
 
+    # 1) ensure parent row exists first
+    supabase.table("user_profiles").upsert(
+        {
+            "user_id": user_id,
+            "display_name": display_name,
+            "access_token": token_info["access_token"],
+            "refresh_token": token_info["refresh_token"],
+            "token_expiry": expires_at,
+            "profile_img": profile_img,
+        },
+        on_conflict="user_id",
+    ).execute()
+
+    # 2) now insert child row
     key = secrets.token_urlsafe(32)
-
     supabase.table("spotify_sessions").insert({
         "key": key,
         "user_id": user_id,
         "token": token_info
     }).execute()
 
-    return RedirectResponse(
-        url=f"https://music-pattern-analyser.streamlit.app/?session={key}"
-    )
+    return RedirectResponse(url=f"{FRONTEND_URL}/?session={key}")
 
 @app.get("/token/{key}")
 def get_token(key):
