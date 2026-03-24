@@ -27,8 +27,8 @@ sp_oauth = SpotifyOAuth(
     client_secret=os.getenv("SPOTIFY_CLIENT_SECRET"),
     redirect_uri=os.getenv("SPOTIFY_REDIRECT_URI"),
     scope="user-top-read user-read-private user-read-email",
-    cache_handler=spotipy.cache_handler.MemoryCacheHandler(),
-    show_dialog=True
+    show_dialog=True,
+    cache_path=None
 )
 
 @app.get("/login")
