@@ -2,8 +2,9 @@ import os
 from fastapi import FastAPI, Request
 from spotipy.oauth2 import SpotifyOAuth
 from fastapi.responses import RedirectResponse
-import secrets
 from supabase import create_client
+import secrets
+import spotipy
 
 app = FastAPI()
 
@@ -32,10 +33,16 @@ async def callback(request: Request):
     code = request.query_params.get("code")
 
     token_info = sp_oauth.get_access_token(code)
+
+    sp = spotipy.SpotifyOAuth(auth=token_info["access_token"])
+    user = sp.me()
+    user_id = user["id"]
+
     key = secrets.token_urlsafe(32)
 
     supabase.table("spotify_sessions").insert({
         "key": key,
+        "user_id": user_id,
         "token": token_info
     }).execute()
 
@@ -47,17 +54,20 @@ async def callback(request: Request):
 def get_token(key):
     result = (
         supabase.table("spotify_sessions")
-        .select("token")
+        .select("token, user_id")
         .eq("key", key)
         .single()
-        .execute()    
+        .execute()
     )
 
     if not result.data:
         return {"error": "Invalid or expired session"}
 
-    token = result.data["token"]
+    data = result.data
 
     supabase.table("spotify_sessions").delete().eq("key",key).execute()
 
-    return token
+    return {
+        "token_info": data["token"],
+        "user_id": data["user_id"]
+    }

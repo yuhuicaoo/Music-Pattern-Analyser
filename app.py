@@ -22,10 +22,11 @@ def main():
             h1 { margin-bottom: 0rem; }
         </style>
     """, unsafe_allow_html=True)
-    
+
     token_info = get_token_from_session()
     if token_info:
         user_id = login_user(token_info)
+        st.session_state.user_id = user_id
         sp = get_spotify_client(user_id)
         fetch_data_and_store(sp, user_id)
         st.rerun()
