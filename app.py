@@ -23,7 +23,7 @@ def main():
         </style>
     """, unsafe_allow_html=True)
 
-    token_info = get_token_from_session()
+    token_info, _ = get_token_from_session()
     if token_info:
         user_id = login_user(token_info)
         st.session_state.user_id = user_id
