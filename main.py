@@ -75,6 +75,8 @@ async def callback(request: Request):
 
     user_id = user["id"]
     display_name = user.get("display_name")
+    if user_id:
+        return {"user_id": user_id, "display_name":display_name}
     profile_img = user["images"][0]["url"] if user.get("images") else None
     expires_at = datetime.fromtimestamp(token_info["expires_at"]).isoformat()
 
