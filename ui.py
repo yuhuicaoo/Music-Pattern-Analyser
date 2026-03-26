@@ -289,10 +289,12 @@ def show_all_users_tracks():
             with col:
                 display_name = user["display_name"]
 
-                st.markdown(f"**{display_name}**")
-
-
-                cards = ""
+                cards = f"""
+                    <div style="font-size: 15px; font-weight: bold; color: white; 
+                        font-family: Inter, sans-serif; margin-bottom: 8px;">
+                        {display_name}
+                    </div>
+                """
                 for idx, row in enumerate(tracks):
                     image_url = row["image_url"]
                     track_name = escape(row["track_name"])
@@ -311,4 +313,4 @@ def show_all_users_tracks():
                             </div>
                         </a>
                     """
-                components.html(f"{TRACKS_CSS}<div>{cards}</div>", height=420, scrolling=False)
+                components.html(f"{TRACKS_CSS}<div>{cards}</div>", height=410, scrolling=False)
