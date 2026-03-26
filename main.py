@@ -43,7 +43,7 @@ async def callback(request: Request):
     if not code:
         return {"error": "Missing Spotify code"}
 
-    token_info = sp_oauth.get_access_token(code, check_cache=False)
+    token_info = sp_oauth.get_access_token(code)
 
     sp = spotipy.Spotify(auth=token_info["access_token"])
     user = sp.current_user()

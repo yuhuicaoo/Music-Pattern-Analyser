@@ -82,3 +82,27 @@ def load_user_artists(user_id):
 
 def delete_user_data(user_id):
     supabase.table("user_profiles").delete().eq("user_id", user_id).execute()
+
+def load_all_users_top5_tracks():
+    users = (
+        supabase.table("user_profiles")
+        .select("user_id, display_name, profile_img")
+        .execute().data
+    )
+    
+    results = []
+    for user in users:
+        user_top5_tracks = (
+            supabase.table("user_tracks")
+            .select("*")
+            .eq("user_id", user["id"])
+            .order("rank")
+            .limit(5)
+            .execute().data
+        )
+
+        results.append({
+            "user": user,
+            "tracks": user_top5_tracks,
+        })
+    return results

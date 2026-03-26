@@ -4,6 +4,7 @@ from html import escape
 from auth import logout_user
 from data import (
     fetch_data_and_store,
+    load_all_users_top5_tracks,
     load_user_artists,
     load_user_tracks,
     needs_refresh,
@@ -266,3 +267,44 @@ def show_top_artists(user_id):
 
     artists_html += "</div>"
     components.html(artists_html, height=200)
+
+
+def show_all_users_tracks():
+    data = load_all_users_top5_tracks()
+
+    if not data:
+        st.info("No users yet.")
+        return
+    
+    st.subheader("Compare your Top 5 Tracks")
+
+    for i in range(0, len(data), 2):
+        chunk = data[i:i+2]
+        cols = st.columns(2)
+
+        for col, user_data in zip(cols, chunk):
+            user = user_data["user"]
+            tracks = user_data["tracks"]
+
+            with col:
+                if user.get("profile_image"):
+                    st.image(user["profile_image"], width=40)
+                st.markdown(f"**{user['display_name']}**")
+            
+                cards = ""
+                for idx, row in enumerate(tracks):
+                    image_url = row["image_url"]
+                    track_name = escape(row["track_name"])
+                    artist = escape(row["artist"])
+
+                    cards += f""" 
+                        <div class="track-card">
+                            <span class="track-number">{idx + 1}</span>
+                            <img class="track-image" src="{image_url}" />
+                            <div>
+                                <div class="track-name">{track_name}</div>
+                                <div class="track-artist">{artist}</div>
+                            </div>
+                        </div>
+                    """
+                components.html(f"{TRACKS_CSS}<div>{cards}</div>", height=320, scrolling=False)
