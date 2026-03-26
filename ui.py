@@ -288,15 +288,8 @@ def show_all_users_tracks():
 
             with col:
                 display_name = user["display_name"]
-                profile_image = user.get("profile_img", "")
 
-                # header with image and name on same line
-                h_col1, h_col2 = st.columns([1, 4])
-                with h_col1:
-                    if profile_image:
-                        st.image(profile_image, width=35)
-                with h_col2:
-                    st.markdown(f"**{display_name}**")
+                st.markdown(f"**{display_name}**")
 
 
                 cards = ""
@@ -318,4 +311,4 @@ def show_all_users_tracks():
                             </div>
                         </a>
                     """
-                components.html(f"{TRACKS_CSS}<div>{cards}</div>", height=400, scrolling=False)
+                components.html(f"{TRACKS_CSS}<div>{cards}</div>", height=420, scrolling=False)
