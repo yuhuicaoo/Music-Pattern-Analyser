@@ -9,6 +9,7 @@ from auth import (
 
 from data import fetch_data_and_store
 from ui import (
+    show_all_users_tracks,
     show_disconnect_button,
     show_top_artists, 
     show_users,
@@ -51,13 +52,15 @@ def main():
     st.caption(f"Logged in as **{display_name}**")
     show_disconnect_button(user_id)
 
-    tab1, tab2, tab3 = st.tabs(["My Top Tracks", "My Top Artists", "Users"])
+    tab1, tab2, tab3, tab4 = st.tabs(["My Top Tracks", "My Top Artists", "Compare Tracks", "Users",])
 
     with tab1:
         show_my_tracks(sp, user_id)
     with tab2:
         show_top_artists(user_id)
     with tab3:
+        show_all_users_tracks()
+    with tab4:
         show_users()
 
 if __name__ == "__main__":
