@@ -306,7 +306,8 @@ def show_all_users_tracks():
                         <div class="user-name">{display_name}</div>
                     </div>
                 """
-                cards = header
+                components.html(f"{TRACKS_CSS}{USERS_CSS}{header}", height=60)
+                cards = ""
                 for idx, row in enumerate(tracks):
                     image_url = row["image_url"]
                     track_name = escape(row["track_name"])
@@ -323,7 +324,7 @@ def show_all_users_tracks():
                         </div>
                     """
                 components.html(
-                    f"{TRACKS_CSS}{USERS_CSS}<div>{cards}</div>",
+                    f"{TRACKS_CSS}<div>{cards}</div>",
                     height=400,
                     scrolling=False,
                 )
