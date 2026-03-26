@@ -287,11 +287,21 @@ def show_all_users_tracks():
             tracks = user_data["tracks"]
 
             with col:
-                if user.get("profile_img"):
-                    st.image(user["profile_img"], width=40)
-                st.markdown(f"**{user['display_name']}**")
-            
-                cards = ""
+                display_name = user["display_name"]
+                profile_image = user.get("profile_img", "")
+                placeholder= display_name[0].upper()
+
+                if profile_image:
+                    avatar = f'<img class="user-avatar" src="{profile_image}" />'
+                else:
+                    avatar = f'<div class="user-avatar-placeholder">{placeholder}</div>'
+
+                header = f"""
+                    <div class="user-header">
+                        {avatar}
+                        <div class="user-name">{display_name}</div>
+                """
+                cards = header
                 for idx, row in enumerate(tracks):
                     image_url = row["image_url"]
                     track_name = escape(row["track_name"])
