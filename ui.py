@@ -38,49 +38,6 @@ TRACKS_CSS = """
 </style>
 """
 
-USERS_CSS = """
-<style>
-    .users-container {
-        display: flex;
-        flex-direction: row;
-        gap: 16px;
-        overflow-x: auto;
-        padding: 10px 0;
-    }
-    .user-card {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 8px;
-        min-width: 80px;
-    }
-    .user-avatar {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        object-fit: cover;
-    }
-    .user-avatar-placeholder {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        background-color: #333;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 24px;
-    }
-    .user-name {
-        font-size: 16px;
-        color: white;
-        text-align: center;
-        font-family: Inter, sans-serif;
-        font-weight: bold
-    }
-</style>
-<div class="users-container">
-"""
-
 
 def build_track_card(idx, row):
     image_url = row["image_url"]
@@ -139,7 +96,6 @@ def show_disconnect_button(user_id):
         logout_user(user_id)
         st.rerun()
 
-
 def show_login_button():
     st.title("🎵 Music Tracker")
     st.caption("Login to see your top Spotify tracks alongside your friends.")
@@ -149,7 +105,6 @@ def show_login_button():
             unsafe_allow_html=True,
         )
 
-
 def load_all_users():
     return (
         supabase.table("user_profiles")
@@ -157,8 +112,7 @@ def load_all_users():
         .execute()
         .data
     )
-
-
+    
 def show_users():
     users = load_all_users()
     if not users:
@@ -166,7 +120,49 @@ def show_users():
 
     st.subheader(f"Current Users: {len(users)}")
 
-    cards = 'div class="users-container">'
+    users_html = """
+    <style>
+        .users-container {
+            display: flex;
+            flex-direction: row;
+            gap: 16px;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+        .user-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            min-width: 80px;
+        }
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .user-avatar-placeholder {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        .user-name {
+            font-size: 16px;
+            color: white;
+            text-align: center;
+            font-family: Inter, sans-serif;
+            font-weight: bold
+        }
+    </style>
+    <div class="users-container">
+    """
+
     for user in users:
         display_name = user["display_name"]
         profile_img = user["profile_img"]
@@ -177,15 +173,15 @@ def show_users():
         else:
             avatar = f'<div class="user-avatar-placeholder">{placeholder_img}</div>'
 
-        cards += f"""
+        users_html += f"""
             <div class="user-card">
                 {avatar}
                 <div class="user-name">{display_name}</div>
             </div>
         """
 
-    cards += "</div>"
-    components.html(f"{USERS_CSS}{cards}", height=120)
+    users_html += "</div>"
+    components.html(users_html, height=120)
 
 
 def show_consent():
@@ -279,11 +275,11 @@ def show_all_users_tracks():
     if not data:
         st.info("No users yet.")
         return
-
+    
     st.subheader("Compare your Top 5 Tracks")
 
     for i in range(0, len(data), 2):
-        chunk = data[i : i + 2]
+        chunk = data[i:i+2]
         cols = st.columns(2)
 
         for col, user_data in zip(cols, chunk):
@@ -293,38 +289,33 @@ def show_all_users_tracks():
             with col:
                 display_name = user["display_name"]
                 profile_image = user.get("profile_img", "")
-                placeholder = display_name[0].upper()
 
-                if profile_image:
-                    avatar = f'<img class="user-avatar" src="{profile_image}" />'
-                else:
-                    avatar = f'<div class="user-avatar-placeholder">{placeholder}</div>'
+                # header with image and name on same line
+                h_col1, h_col2 = st.columns([1, 4])
+                with h_col1:
+                    if profile_image:
+                        st.image(profile_image, width=35)
+                with h_col2:
+                    st.markdown(f"**{display_name}**")
 
-                header = f"""
-                    <div class="user-header">
-                        {avatar}
-                        <div class="user-name">{display_name}</div>
-                    </div>
-                """
-                components.html(f"{TRACKS_CSS}{USERS_CSS}{header}", height=60)
+
                 cards = ""
                 for idx, row in enumerate(tracks):
                     image_url = row["image_url"]
                     track_name = escape(row["track_name"])
                     artist = escape(row["artist"])
+                    track_url = row.get("track_url", "#")
 
-                    cards += f""" 
-                        <div class="track-card">
-                            <span class="track-number">{idx + 1}</span>
-                            <img class="track-image" src="{image_url}" />
-                            <div>
-                                <div class="track-name">{track_name}</div>
-                                <div class="track-artist">{artist}</div>
+                    cards += f"""
+                        <a href="{track_url}" target="_blank" style="text-decoration: none;">
+                            <div class="track-card">
+                                <span class="track-number">{idx + 1}</span>
+                                <img class="track-image" src="{image_url}" />
+                                <div>
+                                    <div class="track-name">{track_name}</div>
+                                    <div class="track-artist">{artist}</div>
+                                </div>
                             </div>
-                        </div>
+                        </a>
                     """
-                components.html(
-                    f"{TRACKS_CSS}<div>{cards}</div>",
-                    height=400,
-                    scrolling=False,
-                )
+                components.html(f"{TRACKS_CSS}<div>{cards}</div>", height=400, scrolling=False)
