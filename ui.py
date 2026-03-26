@@ -184,7 +184,7 @@ def show_users():
             </div>
         """
 
-    users_html += "</div>"
+    cards += "</div>"
     components.html(f"{USERS_CSS}{cards}", height=120)
 
 
