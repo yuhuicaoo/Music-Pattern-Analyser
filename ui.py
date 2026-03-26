@@ -287,8 +287,8 @@ def show_all_users_tracks():
             tracks = user_data["tracks"]
 
             with col:
-                if user.get("profile_image"):
-                    st.image(user["profile_image"], width=40)
+                if user.get("profile_img"):
+                    st.image(user["profile_img"], width=40)
                 st.markdown(f"**{user['display_name']}**")
             
                 cards = ""
@@ -307,4 +307,4 @@ def show_all_users_tracks():
                             </div>
                         </div>
                     """
-                components.html(f"{TRACKS_CSS}<div>{cards}</div>", height=320, scrolling=False)
+                components.html(f"{TRACKS_CSS}<div>{cards}</div>", height=400, scrolling=False)
