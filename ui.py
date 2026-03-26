@@ -313,4 +313,4 @@ def show_all_users_tracks():
                             </div>
                         </a>
                     """
-                components.html(f"{TRACKS_CSS}<div>{cards}</div>", height=410, scrolling=False)
+                components.html(f"{TRACKS_CSS}<div>{cards}</div>", height=430, scrolling=False)
