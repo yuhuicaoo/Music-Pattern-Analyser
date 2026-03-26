@@ -95,7 +95,7 @@ def load_all_users_top5_tracks():
         user_top5_tracks = (
             supabase.table("user_tracks")
             .select("*")
-            .eq("user_id", user["id"])
+            .eq("user_id", user["user_id"])
             .order("rank")
             .limit(5)
             .execute().data
