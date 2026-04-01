@@ -1,2 +1,2 @@
 # Music-Pattern-Analyser
-Using machine learning to analyse listening patterns and trends across Spotify data from my friends and me.
+Using Spotify web api data to visualise what me and my friends are listening to monthly.
