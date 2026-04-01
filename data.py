@@ -38,10 +38,9 @@ def fetch_and_save_top_artists(sp, user_id):
     supabase.table("user_artists").insert(artists).execute()
 
 def fetch_data_and_store(sp, user_id):
-    if needs_refresh(user_id):
-        fetch_and_save_top_tracks(sp, user_id)
-        fetch_and_save_top_artists(sp, user_id)
-        update_last_fetched(user_id)
+    fetch_and_save_top_tracks(sp, user_id)
+    fetch_and_save_top_artists(sp, user_id)
+    update_last_fetched(user_id)
 
 def needs_refresh(user_id):
     profile = (
